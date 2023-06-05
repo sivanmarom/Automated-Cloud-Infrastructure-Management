@@ -6,7 +6,7 @@ pipeline {
                 label 'ec2'
             }
             steps {
-                
+                sh 'terraform init'
                 sh 'terraform destroy -target=module.ec2 --auto-approve'
             }
         }
@@ -15,6 +15,7 @@ pipeline {
                 label 's3'
             }
             steps {   
+                sh 'terraform init'
                 sh 'terraform destroy -target=module.s3 --auto-approve'
             }
         }
@@ -23,6 +24,7 @@ pipeline {
                 label 'iam'
             }
             steps {
+                sh 'terraform init'
                 sh 'terraform destroy -target=module.iam --auto-approve'
             }
         }
@@ -30,7 +32,8 @@ pipeline {
             agent {
                 label 'dynamodb'
             }
-            steps {               
+            steps {      
+                sh 'terraform init'         
                 sh 'terraform destroy -target=module.dynamodb --auto-approve'
             }
         }
