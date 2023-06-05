@@ -20,17 +20,6 @@ module "dynamodb" {
   source = "./modules/dynamodb-module"
 }
 
-terraform {
-  required_providers {
-    github = {
-      source  = "integrations/github"
-      version = "~> 5.0"
-    }
-  }
-}
-provider "github" {
-  token = "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"
-}
 module "github" {
   source = "./modules/github-module"
 

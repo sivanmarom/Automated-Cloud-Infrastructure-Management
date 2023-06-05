@@ -13,7 +13,7 @@ resource "aws_instance" "jenkins_master" {
   }
 
   tags = {
-    Name = var.instances_name[0]
+    Name = var.instance_master
   }
 
   provisioner "remote-exec" {
@@ -26,7 +26,8 @@ resource "aws_instance" "jenkins_master" {
   }
 }
 
-resource "aws_instance" "testing_slave" {
+resource "aws_instance" "test_and_prod" {
+  count = var.instances_name
   ami           = var.instance_ami
   instance_type = var.instnace_type
   key_name      = "terraform_key"
@@ -40,7 +41,7 @@ resource "aws_instance" "testing_slave" {
   }
 
   tags = {
-    Name = var.instances_name[1]
+    Name = var.instances_name[count.index]
   }
 
   provisioner "remote-exec" {
@@ -52,55 +53,3 @@ resource "aws_instance" "testing_slave" {
   }
 }
 
-resource "aws_instance" "production1" {
-  ami           = var.instance_ami
-  instance_type = var.instnace_type
-  key_name      = "terraform_key"
-
-  connection {
-    type        = "ssh"
-    host        = self.public_ip
-    user        = "ubuntu"
-    private_key = file("${path.module}/terraform_key.pem")
-    timeout     = "10m"
-  }
-
-  tags = {
-    Name = var.instances_name[1]
-  }
-
-  provisioner "remote-exec" {
-    inline = [
-      "sudo apt update -y",
-      "sudo apt -y install docker.io",
-      "sudo apt -y install default-jre",
-    ]
-  }
-}
-
-
-resource "aws_instance" "production2" {
-  ami           = var.instance_ami
-  instance_type = var.instnace_type
-  key_name      = "terraform_key"
-
-  connection {
-    type        = "ssh"
-    host        = self.public_ip
-    user        = "ubuntu"
-    private_key = file("${path.module}/terraform_key.pem")
-    timeout     = "10m"
-  }
-
-  tags = {
-    Name = var.instances_name[2]
-  }
-
-  provisioner "remote-exec" {
-    inline = [
-      "sudo apt update -y",
-      "sudo apt -y install docker.io",
-      "sudo apt -y install default-jre",
-    ]
-  }
-}

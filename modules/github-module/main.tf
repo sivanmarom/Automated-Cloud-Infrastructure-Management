@@ -7,7 +7,7 @@ terraform {
   }
 }
 provider "github" {
-  token = "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"
+  token = "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"
 }
 resource "github_repository" "terraform_project" {
   name        = "teraaform-project-new"

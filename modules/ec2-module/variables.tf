@@ -10,5 +10,9 @@ variable "instance_ami" {
 
 variable "instances_name" {
   type    = list(string)
-  default = ["Jenkins_master", "Testing", "Production-1", "Production-2"]
+  default = [ "Testing", "Production-1", "Production-2"]
+}
+variable "instance_master" {
+  type    = string
+  default = "Jenkins_master"
 }
