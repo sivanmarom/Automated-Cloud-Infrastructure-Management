@@ -1,0 +1,49 @@
+pipeline{
+    agent any
+    stages{
+       stage('Launch EC2 Instances') {
+    agent {
+      label 'ec2'
+    }
+    steps {
+      sh 'terraform init'
+      sh 'terraform apply -target=module.ec2 --auto-approve'
+    }
+  }
+ stage('Create S3 Bucket') {
+    agent {
+      label 's3'
+    }
+    steps {
+      sh 'terraform init'
+      sh 'terraform apply -target=module.s3 --auto-approve'
+    }
+  }
+ stage('Create IAM User') {
+    agent {
+      label 'iam'
+    }
+    steps {
+      sh 'terraform init'
+      sh 'terraform apply -target=module.iam --auto-approve'
+    }
+  } stage('Create Dynamodb Table') {
+    agent {
+      label 'dynamodb'
+    }
+    steps {
+      sh 'terraform init'
+      sh 'terraform apply -target=module.dynamodb --auto-approve'
+    }
+  }
+   stage('Handling Github') {
+    agent {
+      label 'github'
+    }
+    steps {
+      sh 'terraform init'
+      sh 'terraform apply -target=module.github --auto-approve'
+    }
+  }
+    }
+}

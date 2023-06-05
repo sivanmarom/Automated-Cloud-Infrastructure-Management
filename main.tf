@@ -5,7 +5,9 @@ provider "aws" {
 module "ec2" {
   source = "./modules/ec2-module"
 }
-
+module "agents" {
+  source = "./modules/agents-module"
+}
 module "s3" {
   source = "./modules/s3-module"
 }

@@ -1,4 +1,4 @@
 variable "bucket_name" {
   type    = string
-  default = "test-result-try"
+  default = "Test-result-project3"
 }
