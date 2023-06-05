@@ -37,14 +37,14 @@ pipeline {
                 sh 'terraform apply -target=module.dynamodb --auto-approve'
             }
         }
-        stage('Handling Github') {
-            agent {
-                label 'github'
-            }
-            steps {
-                sh 'terraform init'
-                sh 'terraform apply -target=module.github --auto-approve'
-            }
-        }
+        // stage('Handling Github') {
+        //     agent {
+        //         label 'github'
+        //     }
+        //     steps {
+        //         sh 'terraform init'
+        //         sh 'terraform apply -target=module.github --auto-approve'
+        //     }
+        // }
     }
 }

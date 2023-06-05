@@ -1,6 +1,6 @@
 variable "table_name" {
   type    = string
-  default = "test-result-try-new"
+  default = "project3-table"
 }
 
 variable "user_col" {
