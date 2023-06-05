@@ -27,7 +27,7 @@ resource "aws_instance" "jenkins_master" {
 }
 
 resource "aws_instance" "test_and_prod" {
-  count = var.instances_name
+  count = length(var.instances_name)
   ami           = var.instance_ami
   instance_type = var.instnace_type
   key_name      = "terraform_key"
