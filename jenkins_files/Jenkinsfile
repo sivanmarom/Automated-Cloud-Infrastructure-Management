@@ -1,7 +1,5 @@
 pipeline {
-    agent {
-        label 'Built-In Node'
-    }
+    agent none
     stages {
         stage('Launch EC2 Instances') {
             agent {
