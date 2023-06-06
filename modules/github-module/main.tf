@@ -7,10 +7,17 @@ terraform {
   }
 }
 provider "github" {
-  token = "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"
+  token = "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"
 }
 resource "github_repository" "terraform_project" {
-  name        = "teraaform-project-new"
-  description = "This is my first repository"
+  name        = var.github_repo
+  description = "This repository created by terraform"
   visibility  = "public"
+  auto_init  = true
 }
+
+resource "github_branch_default" "default_main"{
+  repository = github_repository.terraform_project.name
+  branch     = var.github_main_branch
+}
+

@@ -8,10 +8,21 @@ pipeline {
                 label 'ec2'
             }
             steps {
+                 dir('project3/modules/ec2-module') {
                 sh 'terraform init'
-                sh 'terraform apply -target=module.ec2 --auto-approve'
+                sh 'terraform apply --auto-approve'
+                }
             }
         }
+        //  stage('create production load balancer') {
+        //     agent {
+        //         label 'load_balancer'
+        //     }
+        //     steps {
+        //         sh 'terraform init'
+        //         sh 'terraform apply -target=module.load-balancer --auto-approve'
+        //     }
+        // }
         stage('Create S3 Bucket') {
             agent {
                 label 's3'
