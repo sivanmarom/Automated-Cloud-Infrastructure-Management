@@ -8,7 +8,7 @@ pipeline {
                 label 'ec2'
             }
             steps {
-                 dir('project3/modules/ec2-module') {
+                 dir('modules/ec2-module') {
                 sh 'terraform init'
                 sh 'terraform apply --auto-approve'
                 }
