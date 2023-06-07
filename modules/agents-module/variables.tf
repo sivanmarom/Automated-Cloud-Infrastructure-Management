@@ -10,5 +10,5 @@ variable "instance_ami" {
 
 variable "instances_name" {
   type    = list(string)
-  default = ["ec-2 agent", "s3-agent", "dynamodb-agent", "iam-agent"]
+  default = ["ec-2 agent", "s3-agent", "dynamodb-agent", "iam-agent", "github-agent","cloud-watch-agent","load-balancer-agent"]
 }
