@@ -1,8 +1,4 @@
-provider "aws" {
-  region = "us-east-1"  
-  access_key = "AKIAZ2ZGJFF3DG4TS5UB"
-  secret_key = "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"
-}
+
 
 resource "aws_instance" "jenkins_master" {
   ami           = var.instance_ami
