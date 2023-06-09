@@ -14,22 +14,15 @@ pipeline {
                 }
             }
         }
-        //  stage('create production load balancer') {
-        //     agent {
-        //         label 'load_balancer'
-        //     }
-        //     steps {
-        //         sh 'terraform init'
-        //         sh 'terraform apply -target=module.load-balancer --auto-approve'
-        //     }
-        // }
         stage('Create S3 Bucket') {
             agent {
                 label 's3'
             }
             steps {
+                dir('modules/s3-module'){
                 sh 'terraform init'
-                sh 'terraform apply -target=module.s3 --auto-approve'
+                sh 'terraform apply --auto-approve'
+                }
             }
         }
         stage('Create IAM User') {
@@ -37,8 +30,10 @@ pipeline {
                 label 'iam'
             }
             steps {
+                dir('modules/iam-module'){
                 sh 'terraform init'
-                sh 'terraform apply -target=module.iam --auto-approve'
+                sh 'terraform apply --auto-approve'
+                }
             }
         }
         stage('Create DynamoDB Table') {
@@ -46,18 +41,44 @@ pipeline {
                 label 'dynamodb'
             }
             steps {
+                dir('modules/dynamodb-module'){
                 sh 'terraform init'
-                sh 'terraform apply -target=module.dynamodb --auto-approve'
+                sh 'terraform apply --auto-approve'
+                }
             }
         }
-        // stage('Handling Github') {
-        //     agent {
-        //         label 'github'
-        //     }
-        //     steps {
-        //         sh 'terraform init'
-        //         sh 'terraform apply -target=module.github --auto-approve'
-        //     }
-        // }
+        stage('Handling Github') {
+            agent {
+                label 'github'
+            }
+            steps {
+                dir('modules/github-module'){
+                sh 'terraform init'
+                sh 'terraform apply --auto-approve'
+                }
+            }
+        }
+        stage('Create Cloud-Watch Alarm') {
+            agent {
+                label 'cloud-watch'
+            }
+            steps {
+                dir('modules/cloud-watch-module'){
+                sh 'terraform init'
+                sh 'terraform apply --auto-approve'
+                }
+            }
+        }
+            stage('Create Production Load-Balancer') {
+            agent {
+                label 'load_balancer'
+            }
+            steps {
+                dir('modules/load-balancer-module'){
+                sh 'terraform init'
+                sh 'terraform apply --auto-approve'
+                }
+            }
+        }
     }
 }

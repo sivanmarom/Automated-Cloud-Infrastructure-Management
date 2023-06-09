@@ -12,11 +12,11 @@ variable "production_instances" {
   type    = list(string)
   default = [  "Production-1", "Production-2"]
 }
-variable "testing" {
+variable "testing_instance" {
   type    = string
   default = "Testing"
 }
-variable "instance_master" {
+variable "jenkisn_master_instance" {
   type    = string
   default = "Jenkins_master"
 }

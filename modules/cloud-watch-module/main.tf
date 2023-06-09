@@ -7,7 +7,7 @@ resource "aws_sns_topic_subscription" "email_subscription" {
   protocol  = "email"
   endpoint  = "sivmarom@gmail.com"
 }
-
+#need to change agents ids, and add the cloud watch to ec2 module
 resource "aws_cloudwatch_metric_alarm" "cpu_alarm" {
   count               = length(var.agents-ids)
   alarm_name          = "cpu-utilization-alarm-${var.agents-ids[count.index]}"

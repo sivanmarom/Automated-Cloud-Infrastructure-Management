@@ -1,9 +1,9 @@
 
 
 resource "aws_instance" "jenkins_master" {
-  ami           = var.instance_ami
-  instance_type = var.instnace_type
-  key_name      = "terraform_key"
+  ami                    = var.instance_ami
+  instance_type          = var.instnace_type
+  key_name               = "terraform_key"
   vpc_security_group_ids = [var.security_group]
   connection {
     type        = "ssh"
@@ -14,7 +14,7 @@ resource "aws_instance" "jenkins_master" {
   }
 
   tags = {
-    Name = var.instance_master
+    Name = var.jenkisn_master_instance
   }
   lifecycle {
     create_before_destroy = true
@@ -30,9 +30,9 @@ resource "aws_instance" "jenkins_master" {
 }
 
 resource "aws_instance" "testing" {
-  ami           = var.instance_ami
-  instance_type = var.instnace_type
-  key_name      = "terraform_key"
+  ami                    = var.instance_ami
+  instance_type          = var.instnace_type
+  key_name               = "terraform_key"
   vpc_security_group_ids = [var.security_group]
   connection {
     type        = "ssh"
@@ -43,7 +43,7 @@ resource "aws_instance" "testing" {
   }
 
   tags = {
-    Name = var.testing
+    Name = var.testing_instance
   }
   lifecycle {
     create_before_destroy = true
@@ -58,10 +58,10 @@ resource "aws_instance" "testing" {
 }
 
 resource "aws_instance" "production" {
-  count = length(var.production_instances)
-  ami           = var.instance_ami
-  instance_type = var.instnace_type
-  key_name      = "terraform_key"
+  count                  = length(var.production_instances)
+  ami                    = var.instance_ami
+  instance_type          = var.instnace_type
+  key_name               = "terraform_key"
   vpc_security_group_ids = [var.security_group]
   connection {
     type        = "ssh"

@@ -34,8 +34,5 @@ variable "subnets" {
 }
 
 
-variable "production_instance_ids" {
-  type    = list(string)
-  default = []
-}
+
 

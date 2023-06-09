@@ -6,6 +6,7 @@ terraform {
     }
   }
 }
+#need to replace token and check for secure way to save
 provider "github" {
   token = "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"
 }

@@ -5,7 +5,7 @@ data "terraform_remote_state" "ec2_instance" {
     path = "../ec2-module/terraform.tfstate"
   }
 }
-
+#need to check if i need this saving output
 resource "local_file" "save_output" {
   filename = "output.txt"
   content  = join(",", data.terraform_remote_state.ec2_instance.outputs.instance_ids)

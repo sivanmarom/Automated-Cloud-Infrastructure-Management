@@ -34,7 +34,7 @@ resource "null_resource" "local_exec" {
 
   provisioner "local-exec" {
     command = <<EOT
-      echo "Secret Access Key: ${aws_iam_access_key.access_key.secret}" >> secret_access_key.txt
+      echo "Secret Access Key: ${aws_iam_access_key.access_key.secret}" 
     EOT
   }
 }

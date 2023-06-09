@@ -1,3 +1,6 @@
+provider "aws" {
+  region = "us-east-1"
+}
 resource "aws_instance" "ec2-agents" {
   count         = length(var.instances_name)
   ami           = var.instance_ami
@@ -15,7 +18,7 @@ resource "aws_instance" "ec2-agents" {
   tags = {
     Name = var.instances_name[count.index]
   }
-    provisioner "remote-exec" {
+  provisioner "remote-exec" {
     inline = [
       "sudo apt update -y",
       "sudo apt -y install default-jre",

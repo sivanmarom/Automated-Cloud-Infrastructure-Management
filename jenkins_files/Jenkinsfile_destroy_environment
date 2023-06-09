@@ -3,7 +3,7 @@ pipeline {
         label 'main_agent'
     }
     stages {
-        stage('Launch EC2 Instances') {
+        stage('Destroy EC2 Instances') {
             agent {
                 label 'ec2'
             }
@@ -14,7 +14,7 @@ pipeline {
                 }
             }
         }
-        stage('Create S3 Bucket') {
+        stage('Destroy S3 Bucket') {
             agent {
                 label 's3'
             }
@@ -25,7 +25,7 @@ pipeline {
                 }
             }
         }
-        stage('Create IAM User') {
+        stage('Destroy IAM User') {
             agent {
                 label 'iam'
             }
@@ -36,7 +36,7 @@ pipeline {
                 }
             }
         }
-        stage('Create DynamoDB Table') {
+        stage('Destroy DynamoDB Table') {
             agent {
                 label 'dynamodb'
             }
@@ -47,16 +47,38 @@ pipeline {
                 }
             }
         }
-        // stage('Handling Github') {
-        //     agent {
-        //         label 'github'
-        //     }
-        //     steps {
-        //         dir('/home/ubuntu/workspace/Terraform-Environment') {
-        //             sh 'terraform init'
-        //             sh 'terraform apply -target=module.github --auto-approve'
-        //         }
-        //     }
-        // }
+        stage('Destroy Github resource') {
+            agent {
+                label 'github'
+            }
+            steps {
+                dir('/home/ubuntu/workspace/Terraform-Environment') {
+                    sh 'terraform init'
+                    sh 'terraform apply -target=module.github --auto-approve'
+                }
+            }
+        }
+        stage('Destroy Cloud-Watch Alarm') {
+            agent {
+                label 'cloud-watch'
+            }
+            steps {
+                dir('/home/ubuntu/workspace/Terraform-Environment') {
+                    sh 'terraform init'
+                    sh 'terraform apply -target=module.cloud-watch --auto-approve'
+                }
+            }
+        }
+        stage('Destroy Load-Balancer') {
+            agent {
+                label 'load-balancer'
+            }
+            steps {
+                dir('/home/ubuntu/workspace/Terraform-Environment') {
+                    sh 'terraform init'
+                    sh 'terraform apply -target=module.load-balancer --auto-approve'
+                }
+            }
+        }
     }
 }

@@ -1,6 +1,6 @@
 variable "github_repo" {
   type = string
-  default = "Teraaform-project"
+  default = "Terraform-project"
 }
 variable "github_main_branch" {
   type = string
