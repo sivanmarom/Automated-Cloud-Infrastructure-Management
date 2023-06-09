@@ -1,4 +1,6 @@
-
+provider "aws" {
+  region = "us-east-1"
+}
 
 resource "aws_instance" "jenkins_master" {
   ami                    = var.instance_ami

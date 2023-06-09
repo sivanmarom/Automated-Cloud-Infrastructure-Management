@@ -1,3 +1,6 @@
+provider "aws" {
+  region = "us-east-1"
+}
 terraform {
   required_providers {
     github = {
@@ -8,16 +11,16 @@ terraform {
 }
 #need to replace token and check for secure way to save
 provider "github" {
-  token = "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"
+  token = "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"
 }
 resource "github_repository" "terraform_project" {
   name        = var.github_repo
   description = "This repository created by terraform"
   visibility  = "public"
-  auto_init  = true
+  auto_init   = true
 }
 
-resource "github_branch_default" "default_main"{
+resource "github_branch_default" "default_main" {
   repository = github_repository.terraform_project.name
   branch     = var.github_main_branch
 }

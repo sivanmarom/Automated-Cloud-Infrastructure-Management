@@ -1,3 +1,6 @@
+provider "aws" {
+  region = "us-east-1"
+}
 resource "aws_sns_topic" "notification_topic" {
   name = "cpu-alarm-notification-topic"
 }

@@ -1,3 +1,6 @@
+provider "aws" {
+  region = "us-east-1"
+}
 data "terraform_remote_state" "ec2_instance" {
   backend = "local"
 

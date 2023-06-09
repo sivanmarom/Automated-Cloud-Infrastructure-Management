@@ -1,3 +1,6 @@
+provider "aws" {
+  region = "us-east-1"
+}
 resource "aws_iam_user" "new-user" {
   name = var.iam_user
   path = "/users/"
