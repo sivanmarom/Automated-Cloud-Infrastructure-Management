@@ -16,9 +16,13 @@ stage('Launch EC2 Instances') {
                     script {
                         sh 'terraform init'
                         sh 'terraform apply --auto-approve'
+
                         def consoleOutput = sh(returnStdout: true, script: 'terraform output -json').trim()
-                        def instanceIds = readJSON(text: consoleOutput).instance_ids.value
-                        env.INSTANCE_IDS = instanceIds
+                        echo "Output JSON: ${consoleOutput}"
+
+                        def instanceIds = readJSON(text: consoleOutput)['instance_ids']
+                        env.INSTANCE_IDS = instanceIds.join(", ")
+
                         echo "INSTANCE_IDS: ${env.INSTANCE_IDS}"
                     }
                 }
