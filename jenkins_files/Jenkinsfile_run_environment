@@ -7,25 +7,25 @@ pipeline {
         INSTANCE_IDS = ""
     }
     stages {
-        stage('Launch EC2 Instances') {
+stage('Launch EC2 Instances') {
             agent {
                 label 'ec2'
             }
             steps {
-                 dir('modules/ec2-module') {
+                dir('modules/ec2-module') {
                     script {
                         sh 'terraform init'
                         sh 'terraform apply --auto-approve'
+
                         def consoleOutput = sh(returnStdout: true, script: 'terraform output -json').trim()
-                         echo "Output JSON: ${consoleOutput}"
-                        def instanceIds = readJSON(text: consoleOutput).instance_ids
-                        env.INSTANCE_IDS = instanceIds.join(',')
-                        }
-                
+                        echo "Output JSON: ${consoleOutput}"
+
+                        def instanceIds = readJSON(text: consoleOutput).instance_ids.value
+                        env.INSTANCE_IDS = instanceIds
+                    }
                 }
             }
         }
-
 
         // stage('Create S3 Bucket') {
         //     agent {
