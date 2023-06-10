@@ -16,12 +16,10 @@ stage('Launch EC2 Instances') {
                     script {
                         sh 'terraform init'
                         sh 'terraform apply --auto-approve'
-
                         def consoleOutput = sh(returnStdout: true, script: 'terraform output -json').trim()
-                        echo "Output JSON: ${consoleOutput}"
-
                         def instanceIds = readJSON(text: consoleOutput).instance_ids.value
                         env.INSTANCE_IDS = instanceIds
+                        echo "INSTANCE_IDS: ${env.INSTANCE_IDS}"
                     }
                 }
             }
@@ -89,7 +87,7 @@ stage('Launch EC2 Instances') {
             steps {
                 dir('modules/load-balancer-module'){
                  script {
-                def instanceIds = env.INSTANCE_IDS ?: ""
+                def instanceIds = env.INSTANCE_IDS
                 sh "terraform init"
               sh "terraform apply --auto-approve -var=\"instance_ids=${instanceIds}\""
 
