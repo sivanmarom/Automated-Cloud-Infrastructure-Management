@@ -20,10 +20,10 @@ pipeline {
                 def consoleOutput = sh(returnStdout: true, script: 'terraform output -raw instance_ids').trim()
                 echo "Output: ${consoleOutput}"
 
-                withEnv(["INSTANCE_IDS=${consoleOutput}"]) {
+                env.INSTANCE_IDS = consoleOutput
                 echo "INSTANCE_IDS: ${env.INSTANCE_IDS}"
                 echo "INSTANCE_IDS Type: ${env.INSTANCE_IDS.class.simpleName}"
-        }
+        
         }
         }
       }
