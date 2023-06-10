@@ -92,8 +92,9 @@ pipeline {
             dir('modules/load-balancer-module') {
             script {
                 sh 'terraform init'
-                def instanceIdsList = env.INSTANCE_IDS.tokenize(',')
-                sh "terraform apply --auto-approve -var='instance_ids=[${instanceIdsList.collect { "\"$it\"" }.join(', ')}]'"
+                sh """
+                            terraform apply --auto-approve -var='instance_ids=[${env.INSTANCE_IDS.tokenize(',').collect { "\"$it\"" }.join(', ')}]'
+                        """
             }
             }
         }
