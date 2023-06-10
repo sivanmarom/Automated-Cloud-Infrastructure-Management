@@ -87,21 +87,34 @@ pipeline {
         //         }
         //     }
         // }
-        stage('Create Production Load-Balancer') {
-        agent {
-            label 'load_balancer'
-        }
-        steps {
-            dir('modules/load-balancer-module') {
-            script {
-                sh 'terraform init'
-                  sh """
-                    terraform apply --auto-approve -var="instance_ids=${env.INSTANCE_IDS}"
-                """
+                stage('Create Production Load-Balancer') {
+            agent {
+                label 'load_balancer'
             }
+            steps {
+                dir('modules/load-balancer-module') {
+                    script {
+                        echo "INSTANCE_IDS: ${env.INSTANCE_IDS}"
+                    }
+                }
             }
         }
-        }
+
+        // stage('Create Production Load-Balancer') {
+        // agent {
+        //     label 'load_balancer'
+        // }
+        // steps {
+        //     dir('modules/load-balancer-module') {
+        //     script {
+        //         sh 'terraform init'
+        //           sh """
+        //             terraform apply --auto-approve -var="instance_ids=${env.INSTANCE_IDS}"
+        //         """
+        //     }
+        //     }
+        // }
+        // }
   }
 }
 
