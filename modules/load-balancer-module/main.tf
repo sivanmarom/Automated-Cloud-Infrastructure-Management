@@ -1,17 +1,9 @@
 provider "aws" {
   region = "us-east-1"
 }
-data "terraform_remote_state" "ec2_instance" {
-  backend = "local"
 
-  config = {
-    path = "../ec2-module/terraform.tfstate"
-  }
-}
-#need to check if i need this saving output
-resource "local_file" "save_output" {
-  filename = "output.txt"
-  content  = join(",", data.terraform_remote_state.ec2_instance.outputs.instance_ids)
+data "external" "instance_ids" {
+  program = ["bash", "-c", "echo -n $INSTANCE_IDS"]
 }
 
 resource "aws_lb" "load_balancer" {
@@ -20,7 +12,7 @@ resource "aws_lb" "load_balancer" {
   load_balancer_type = "application"
   security_groups    = [var.security_group]
   subnets            = var.subnets
-  count              = length(data.terraform_remote_state.ec2_instance.outputs.instance_ids)
+  count              = length(split(",", data.external.instance_ids.result))
 }
 
 resource "aws_lb_target_group" "target_group" {
@@ -40,12 +32,12 @@ resource "aws_lb_listener" "listener" {
     type             = "forward"
   }
 
-  count = length(data.terraform_remote_state.ec2_instance.outputs.instance_ids)
+  count = length(split(",", data.external.instance_ids.result))
 }
 
 resource "aws_lb_target_group_attachment" "target_group_attachment" {
-  count            = length(data.terraform_remote_state.ec2_instance.outputs.instance_ids)
+  count            = length(split(",", data.external.instance_ids.result))
   target_group_arn = aws_lb_target_group.target_group.arn
-  target_id        = data.terraform_remote_state.ec2_instance.outputs.instance_ids[count.index]
+  target_id        = element(split(",", data.external.instance_ids.result), count.index)
   port             = var.target_group_port
 }

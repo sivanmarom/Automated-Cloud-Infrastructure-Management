@@ -4,6 +4,7 @@ pipeline {
     }
      environment {
         GITHUB_TOKEN = credentials('github_token')
+        INSTANCE_IDS = ""
     }
     stages {
         stage('Launch EC2 Instances') {
@@ -17,69 +18,82 @@ pipeline {
                 }
             }
         }
-        stage('Create S3 Bucket') {
-            agent {
-                label 's3'
-            }
-            steps {
-                dir('modules/s3-module'){
-                sh 'terraform init'
-                sh 'terraform apply --auto-approve'
-                }
-            }
+        stage('Capture Instance IDs') {
+    steps {
+        script {
+            def consoleOutput = sh(returnStdout: true, script: 'terraform apply --auto-approve').trim()
+            def instanceIds = consoleOutput =~ /"i-\w+"/
+            env.INSTANCE_IDS = instanceIds.collect { it.replaceAll(/"/, '') }.join(',')
         }
-        stage('Create IAM User') {
-            agent {
-                label 'iam'
-            }
-            steps {
-                dir('modules/iam-module'){
-                sh 'terraform init'
-                sh 'terraform apply --auto-approve'
-                }
-            }
-        }
-        stage('Create DynamoDB Table') {
-            agent {
-                label 'dynamodb'
-            }
-            steps {
-                dir('modules/dynamodb-module'){
-                sh 'terraform init'
-                sh 'terraform apply --auto-approve'
-                }
-            }
-        }
-        stage('Handling Github') {
-            agent {
-                label 'github'
-            }
-            steps {
-                dir('modules/github-module'){
-                sh 'terraform init'
-                sh "terraform apply --auto-approve -var=\"github_token=${env.GITHUB_TOKEN}\""
-                }
-            }
-        }
-        stage('Create Cloud-Watch Alarm') {
-            agent {
-                label 'cloud-watch'
-            }
-            steps {
-                dir('modules/cloud-watch-module'){
-                sh 'terraform init'
-                sh 'terraform apply --auto-approve'
-                }
-            }
-        }
+    }
+}
+        // stage('Create S3 Bucket') {
+        //     agent {
+        //         label 's3'
+        //     }
+        //     steps {
+        //         dir('modules/s3-module'){
+        //         sh 'terraform init'
+        //         sh 'terraform apply --auto-approve'
+        //         }
+        //     }
+        // }
+        // stage('Create IAM User') {
+        //     agent {
+        //         label 'iam'
+        //     }
+        //     steps {
+        //         dir('modules/iam-module'){
+        //         sh 'terraform init'
+        //         sh 'terraform apply --auto-approve'
+        //         }
+        //     }
+        // }
+        // stage('Create DynamoDB Table') {
+        //     agent {
+        //         label 'dynamodb'
+        //     }
+        //     steps {
+        //         dir('modules/dynamodb-module'){
+        //         sh 'terraform init'
+        //         sh 'terraform apply --auto-approve'
+        //         }
+        //     }
+        // }
+        // stage('Handling Github') {
+        //     agent {
+        //         label 'github'
+        //     }
+        //     steps {
+        //         dir('modules/github-module'){
+        //         sh 'terraform init'
+        //         sh "terraform apply --auto-approve -var=\"github_token=${env.GITHUB_TOKEN}\""
+        //         }
+        //     }
+        // }
+        // stage('Create Cloud-Watch Alarm') {
+        //     agent {
+        //         label 'cloud-watch'
+        //     }
+        //     steps {
+        //         dir('modules/cloud-watch-module'){
+        //         sh 'terraform init'
+        //         sh 'terraform apply --auto-approve'
+        //         }
+        //     }
+        // }
             stage('Create Production Load-Balancer') {
             agent {
                 label 'load_balancer'
             }
             steps {
                 dir('modules/load-balancer-module'){
-                sh 'terraform init'
-                sh 'terraform apply --auto-approve'
+                 script {
+                def instanceIds = env.INSTANCE_IDS ?: ""
+                sh "terraform init"
+               sh "terraform apply --auto-approve -var=\"instance_ids=${env.INSTANCE_IDS}\""
+
+            }
                 }
             }
         }
