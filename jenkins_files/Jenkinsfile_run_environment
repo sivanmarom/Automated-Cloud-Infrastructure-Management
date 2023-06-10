@@ -18,15 +18,17 @@ pipeline {
                 }
             }
         }
-        stage('Capture Instance IDs') {
+      stage('Capture Instance IDs') {
     steps {
         script {
+            sh 'terraform init'
             def consoleOutput = sh(returnStdout: true, script: 'terraform apply --auto-approve').trim()
             def instanceIds = consoleOutput =~ /"i-\w+"/
             env.INSTANCE_IDS = instanceIds.collect { it.replaceAll(/"/, '') }.join(',')
         }
     }
 }
+
         // stage('Create S3 Bucket') {
         //     agent {
         //         label 's3'
