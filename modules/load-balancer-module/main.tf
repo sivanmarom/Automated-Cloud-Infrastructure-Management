@@ -2,17 +2,13 @@ provider "aws" {
   region = "us-east-1"
 }
 
-data "external" "instance_ids" {
-  program = ["bash", "-c", "echo -n $INSTANCE_IDS"]
-}
-
 resource "aws_lb" "load_balancer" {
   name               = var.load_balancer_name
   internal           = false
   load_balancer_type = "application"
   security_groups    = [var.security_group]
   subnets            = var.subnets
-  count              = length(split(",", data.external.instance_ids.result))
+  count              = length(var.instance_ids)
 }
 
 resource "aws_lb_target_group" "target_group" {
@@ -32,12 +28,12 @@ resource "aws_lb_listener" "listener" {
     type             = "forward"
   }
 
-  count = length(split(",", data.external.instance_ids.result))
+  count = length(var.instance_ids)
 }
 
 resource "aws_lb_target_group_attachment" "target_group_attachment" {
-  count            = length(split(",", data.external.instance_ids.result))
+  count            = length(var.instance_ids)
   target_group_arn = aws_lb_target_group.target_group.arn
-  target_id        = element(split(",", data.external.instance_ids.result), count.index)
+  target_id        = var.instance_ids[count.index]
   port             = var.target_group_port
 }

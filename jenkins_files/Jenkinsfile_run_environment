@@ -7,30 +7,25 @@ pipeline {
         INSTANCE_IDS = ""
     }
     stages {
-stage('Launch EC2 Instances') {
-            agent {
-                label 'ec2'
-            }
-            steps {
-                dir('modules/ec2-module') {
-                    script {
-                        sh 'terraform init'
-                        sh 'terraform apply --auto-approve'
+ stage('Launch EC2 Instances') {
+      agent {
+        label 'ec2'
+      }
+      steps {
+        dir('modules/ec2-module') {
+          script {
+            sh 'terraform init'
+            sh 'terraform apply --auto-approve'
 
-                        def consoleOutput = sh(returnStdout: true, script: 'terraform output -json').trim()
-                        echo "Output JSON: ${consoleOutput}"
+            def consoleOutput = sh(returnStdout: true, script: 'terraform output -raw instance_ids').trim()
+            echo "Output: ${consoleOutput}"
 
-                        def instanceIds = readJSON(text: consoleOutput)['instance_ids']
-                        if (instanceIds instanceof String) {
-                            instanceIds = [instanceIds]
-                        }
-                        env.INSTANCE_IDS = instanceIds.join(", ")
-
-                        echo "INSTANCE_IDS: ${env.INSTANCE_IDS}"
-                    }
-                }
-            }
+            env.INSTANCE_IDS = consoleOutput
+            echo "INSTANCE_IDS: ${env.INSTANCE_IDS}"
+          }
         }
+      }
+    }
 
         // stage('Create S3 Bucket') {
         //     agent {
@@ -87,20 +82,20 @@ stage('Launch EC2 Instances') {
         //         }
         //     }
         // }
-            stage('Create Production Load-Balancer') {
-            agent {
-                label 'load_balancer'
-            }
-            steps {
-                dir('modules/load-balancer-module'){
-                 script {
-                def instanceIds = env.INSTANCE_IDS
-                sh "terraform init"
-              sh "terraform apply --auto-approve -var=\"instance_ids=${instanceIds}\""
-
-            }
-                }
-            }
+    stage('Create Production Load-Balancer') {
+      agent {
+        label 'load_balancer'
+      }
+      steps {
+        dir('modules/load-balancer-module') {
+          script {
+            def instanceIds = env.INSTANCE_IDS
+            sh 'terraform init'
+            sh "terraform apply --auto-approve -var=\"instance_ids=${instanceIds}\""
+          }
         }
+      }
     }
+  }
 }
+
