@@ -16,8 +16,8 @@ pipeline {
                     script {
                         sh 'terraform init'
                         sh 'terraform apply --auto-approve'
-
                         def consoleOutput = sh(returnStdout: true, script: 'terraform output -json').trim()
+                         echo "Output JSON: ${consoleOutput}"
                         def instanceIds = readJSON(text: consoleOutput).instance_ids
                         env.INSTANCE_IDS = instanceIds.join(',')
                         }
