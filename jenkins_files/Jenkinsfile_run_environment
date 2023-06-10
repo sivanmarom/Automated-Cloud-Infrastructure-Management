@@ -13,26 +13,19 @@ pipeline {
             }
             steps {
                  dir('modules/ec2-module') {
-                sh 'terraform init'
-                sh 'terraform apply --auto-approve'
+                    script {
+                        sh 'terraform init'
+                        sh 'terraform apply --auto-approve'
+
+                        def consoleOutput = sh(returnStdout: true, script: 'terraform output -json').trim()
+                        def instanceIds = readJSON(text: consoleOutput).instance_ids
+                        env.INSTANCE_IDS = instanceIds.join(',')
+                        }
+                
                 }
             }
         }
-      stage('Capture Instance IDs') {
-    steps {
-        dir('modules/ec2-module') {
-        agent {
-                label 'ec2'
-            }
-        script {
-            sh 'terraform init'
-            def consoleOutput = sh(returnStdout: true, script: 'terraform apply --auto-approve').trim()
-            def instanceIds = consoleOutput =~ /"i-\w+"/
-            env.INSTANCE_IDS = instanceIds.collect { it.replaceAll(/"/, '') }.join(',')
-        }
-    }
- }
-}
+
 
         // stage('Create S3 Bucket') {
         //     agent {
