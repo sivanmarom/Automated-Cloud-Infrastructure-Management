@@ -23,7 +23,7 @@ pipeline {
                 echo "Output: ${consoleOutput}"
 
                 def instanceIdsList = consoleOutput.tokenize(',')
-                INSTANCE_IDS = instanceIdsList
+                params.INSTANCE_IDS = instanceIdsList
                     echo "INSTANCE_IDS: ${INSTANCE_IDS}"
                 
         }
