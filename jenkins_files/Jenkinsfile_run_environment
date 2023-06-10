@@ -4,10 +4,9 @@ pipeline {
     }
      environment {
         GITHUB_TOKEN = credentials('github_token')
+        INSTANCE_IDS =""
     }
-     parameters {
-        string(name: 'INSTANCE_IDS', defaultValue: '', description: 'Comma-separated list of instance IDs')
-    }
+
     stages {
  stage('Launch EC2 Instances') {
       agent {
