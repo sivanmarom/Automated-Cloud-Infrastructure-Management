@@ -24,6 +24,7 @@ pipeline {
                 def instanceIdsList = consoleOutput.tokenize(',')
 
                 withEnv(["INSTANCE_IDS=${instanceIdsList}"]) {
+                    stash name: 'instanceIds', includes: 'terraform.tfstate*'
                     echo "INSTANCE_IDS: ${env.INSTANCE_IDS}"
                     echo "INSTANCE_IDS Type: ${env.INSTANCE_IDS.class.simpleName}"
                 }
@@ -94,6 +95,7 @@ pipeline {
             steps {
                 dir('modules/load-balancer-module') {
                     script {
+                         unstash 'instanceIds'
                         echo "INSTANCE_IDS: ${env.INSTANCE_IDS}"
                     }
                 }
