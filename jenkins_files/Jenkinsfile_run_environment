@@ -20,6 +20,7 @@ pipeline {
         }
       stage('Capture Instance IDs') {
     steps {
+        dir('modules/ec2-module') {
         agent {
                 label 'ec2'
             }
@@ -30,6 +31,7 @@ pipeline {
             env.INSTANCE_IDS = instanceIds.collect { it.replaceAll(/"/, '') }.join(',')
         }
     }
+ }
 }
 
         // stage('Create S3 Bucket') {
