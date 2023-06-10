@@ -96,7 +96,7 @@ pipeline {
             script {
                 sh 'terraform init'
                   sh """
-                            terraform apply --auto-approve -var="instance_ids=[${env.INSTANCE_IDS_PARAM.tokenize(',').collect { '\"' + it + '\"' }.join(', ')}]"
+                            terraform apply --auto-approve -var="instance_ids=[${env.INSTANCE_IDS.tokenize(',').collect { '\"' + it + '\"' }.join(', ')}]"
                         """
             }
             }
