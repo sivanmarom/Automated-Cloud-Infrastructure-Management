@@ -4,7 +4,9 @@ pipeline {
     }
      environment {
         GITHUB_TOKEN = credentials('github_token')
-        INSTANCE_IDS = ""
+    }
+     parameters {
+        string(name: 'INSTANCE_IDS', defaultValue: '', description: 'Comma-separated list of instance IDs')
     }
     stages {
  stage('Launch EC2 Instances') {
@@ -21,11 +23,9 @@ pipeline {
                 echo "Output: ${consoleOutput}"
 
                 def instanceIdsList = consoleOutput.tokenize(',')
-
-                withEnv(["INSTANCE_IDS=${instanceIdsList}"]) {
-                    echo "INSTANCE_IDS: ${env.INSTANCE_IDS}"
-                    echo "INSTANCE_IDS Type: ${env.INSTANCE_IDS.class.simpleName}"
-                }
+                INSTANCE_IDS = instanceIdsList
+                    echo "INSTANCE_IDS: ${INSTANCE_IDS}"
+                
         }
         }
       }
@@ -95,7 +95,7 @@ pipeline {
             script {
                 sh 'terraform init'
                   sh """
-                    terraform apply --auto-approve -var="instance_ids=${env.INSTANCE_IDS}"
+                    terraform apply --auto-approve -var="instance_ids=${params.INSTANCE_IDS}"
                 """
             }
             }
