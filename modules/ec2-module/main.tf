@@ -1,17 +1,18 @@
 provider "aws" {
   region = "us-east-1"
+
 }
 
 resource "aws_instance" "jenkins_master" {
   ami                    = var.instance_ami
   instance_type          = var.instnace_type
-  key_name               = "terraform_key"
+  key_name               = "project_3"
   vpc_security_group_ids = [var.security_group]
   connection {
     type        = "ssh"
     host        = self.public_ip
     user        = "ubuntu"
-    private_key = file("${path.module}/terraform_key.pem")
+    private_key = file("${path.module}/project_3.pem")
     timeout     = "10m"
   }
 
@@ -34,13 +35,13 @@ resource "aws_instance" "jenkins_master" {
 resource "aws_instance" "testing" {
   ami                    = var.instance_ami
   instance_type          = var.instnace_type
-  key_name               = "terraform_key"
+  key_name               = "project_3"
   vpc_security_group_ids = [var.security_group]
   connection {
     type        = "ssh"
     host        = self.public_ip
     user        = "ubuntu"
-    private_key = file("${path.module}/terraform_key.pem")
+    private_key = file("${path.module}/project_3.pem")
     timeout     = "10m"
   }
 
@@ -63,13 +64,13 @@ resource "aws_instance" "production" {
   count                  = length(var.production_instances)
   ami                    = var.instance_ami
   instance_type          = var.instnace_type
-  key_name               = "terraform_key"
+  key_name               = "project_3"
   vpc_security_group_ids = [var.security_group]
   connection {
     type        = "ssh"
     host        = self.public_ip
     user        = "ubuntu"
-    private_key = file("${path.module}/terraform_key.pem")
+    private_key = file("${path.module}/project_3.pem")
     timeout     = "10m"
   }
 
