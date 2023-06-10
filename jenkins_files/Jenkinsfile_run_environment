@@ -89,14 +89,14 @@ pipeline {
             label 'load_balancer'
         }
          environment {
-                INSTANCE_IDS_PARAM = env.INSTANCE_IDS
+                INSTANCE_IDS_PARAM = "${env.INSTANCE_IDS}"
             }
         steps {
             dir('modules/load-balancer-module') {
             script {
                 sh 'terraform init'
-                 sh """
-                            terraform apply --auto-approve -var='instance_ids=[${env.INSTANCE_IDS_PARAM.tokenize(',').collect { "\"$it\"" }.join(', ')}]'
+                  sh """
+                            terraform apply --auto-approve -var="instance_ids=[${env.INSTANCE_IDS_PARAM.tokenize(',').collect { '\"' + it + '\"' }.join(', ')}]"
                         """
             }
             }
