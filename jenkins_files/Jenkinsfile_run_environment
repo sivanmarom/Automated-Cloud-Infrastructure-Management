@@ -88,9 +88,6 @@ pipeline {
         agent {
             label 'load_balancer'
         }
-         environment {
-                INSTANCE_IDS_PARAM = "${env.INSTANCE_IDS}"
-            }
         steps {
             dir('modules/load-balancer-module') {
             script {
