@@ -11,7 +11,7 @@ terraform {
 }
 #need to replace token and check for secure way to save
 provider "github" {
-  token = "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"
+  token = "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"
 }
 resource "github_repository" "terraform_project" {
   name        = var.github_repo
