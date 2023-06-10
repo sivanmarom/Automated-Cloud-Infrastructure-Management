@@ -17,16 +17,7 @@ pipeline {
         script {
                 sh 'terraform init'
                 sh 'terraform apply --auto-approve'
-
-                def consoleOutput = sh(returnStdout: true, script: 'terraform output -raw instance_ids').trim()
-                echo "Output: ${consoleOutput}"
-
-                def instanceIdsList = consoleOutput.tokenize(',')
-
-                withEnv(["INSTANCE_IDS=${instanceIdsList}"]) {
-                    stash name: 'instanceIds', includes: env.INSTANCE_IDS
-                    echo "INSTANCE_IDS: ${env.INSTANCE_IDS}"
-                    echo "INSTANCE_IDS Type: ${env.INSTANCE_IDS.class.simpleName}"
+                stash name: 'instanceIds', includes: 'terraform.tfstate*'
                 }
         }
         }
@@ -88,19 +79,21 @@ pipeline {
         //         }
         //     }
         // }
-                stage('Create Production Load-Balancer') {
-            agent {
-                label 'load_balancer'
-            }
-            steps {
-                dir('modules/load-balancer-module') {
-                    script {
-                         unstash 'instanceIds'
-                        echo "INSTANCE_IDS: ${env.INSTANCE_IDS}"
-                    }
-                }
+    stage('Create Production Load-Balancer') {
+    agent {
+        label 'load_balancer'
+    }
+    steps {
+        dir('modules/load-balancer-module') {
+            script {
+                unstash 'instanceIds'
+                env.INSTANCE_IDS = sh(script: 'terraform output -raw instance_ids', returnStdout: true).trim()
+                echo "INSTANCE_IDS: ${env.INSTANCE_IDS}"
+               
             }
         }
+    }
+
 
         // stage('Create Production Load-Balancer') {
         // agent {
@@ -117,6 +110,7 @@ pipeline {
         //     }
         // }
         // }
+        }
   }
-}
+
 
