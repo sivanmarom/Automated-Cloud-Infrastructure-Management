@@ -8,9 +8,9 @@ pipeline {
                 label 'ec2'
             }
             steps {
-                dir('/home/ubuntu/workspace/Terraform-Environment') {
+                dir('/home/ubuntu/workspace/Terraform-Environment/modules/ec2-module') {
                     sh 'terraform init'
-                    sh 'terraform destroy -target=module.ec2 --auto-approve'
+                    sh 'terraform destroy --auto-approve'
                 }
             }
         }
@@ -19,9 +19,9 @@ pipeline {
                 label 's3'
             }
             steps {   
-                dir('/home/ubuntu/workspace/Terraform-Environment') {
+                dir('/home/ubuntu/workspace/Terraform-Environment/modules/s3-module') {
                     sh 'terraform init'
-                    sh 'terraform destroy -target=module.s3 --auto-approve'
+                    sh 'terraform destroy --auto-approve'
                 }
             }
         }
@@ -30,9 +30,9 @@ pipeline {
                 label 'iam'
             }
             steps {
-                dir('/home/ubuntu/workspace/Terraform-Environment') {
+                dir('/home/ubuntu/workspace/Terraform-Environment/modules/iam-module') {
                     sh 'terraform init'
-                    sh 'terraform destroy -target=module.iam --auto-approve'
+                    sh 'terraform destroy --auto-approve'
                 }
             }
         }
@@ -41,9 +41,9 @@ pipeline {
                 label 'dynamodb'
             }
             steps {      
-                dir('/home/ubuntu/workspace/Terraform-Environment') {
+                dir('/home/ubuntu/workspace/Terraform-Environment/modules/dynamodb-module') {
                     sh 'terraform init'         
-                    sh 'terraform destroy -target=module.dynamodb --auto-approve'
+                    sh 'terraform destroy --auto-approve'
                 }
             }
         }
@@ -52,9 +52,9 @@ pipeline {
                 label 'github'
             }
             steps {
-                dir('/home/ubuntu/workspace/Terraform-Environment') {
+                dir('/home/ubuntu/workspace/Terraform-Environment/modules/github-module') {
                     sh 'terraform init'
-                    sh 'terraform apply -target=module.github --auto-approve'
+                    sh 'terraform destroy --auto-approve'
                 }
             }
         }
@@ -63,9 +63,9 @@ pipeline {
                 label 'cloud-watch'
             }
             steps {
-                dir('/home/ubuntu/workspace/Terraform-Environment') {
+                dir('/home/ubuntu/workspace/Terraform-Environment/modules/cloud-watch-module') {
                     sh 'terraform init'
-                    sh 'terraform apply -target=module.cloud-watch --auto-approve'
+                    sh 'terraform destroy --auto-approve'
                 }
             }
         }
@@ -74,9 +74,9 @@ pipeline {
                 label 'load-balancer'
             }
             steps {
-                dir('/home/ubuntu/workspace/Terraform-Environment') {
+                dir('/home/ubuntu/workspace/Terraform-Environment/modules/load-balancer-module') {
                     sh 'terraform init'
-                    sh 'terraform apply -target=module.load-balancer --auto-approve'
+                    sh 'terraform destroy --auto-approve'
                 }
             }
         }
