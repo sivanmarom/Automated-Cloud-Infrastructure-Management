@@ -20,10 +20,12 @@ pipeline {
                 def consoleOutput = sh(returnStdout: true, script: 'terraform output -raw instance_ids').trim()
                 echo "Output: ${consoleOutput}"
 
-                env.INSTANCE_IDS = consoleOutput
-                echo "INSTANCE_IDS: ${env.INSTANCE_IDS}"
-                echo "INSTANCE_IDS Type: ${env.INSTANCE_IDS.class.simpleName}"
-        
+                def instanceIdsList = consoleOutput.tokenize(',')
+
+                withEnv(["INSTANCE_IDS=${instanceIdsList}"]) {
+                    echo "INSTANCE_IDS: ${env.INSTANCE_IDS}"
+                    echo "INSTANCE_IDS Type: ${env.INSTANCE_IDS.class.simpleName}"
+                }
         }
         }
       }
@@ -93,8 +95,8 @@ pipeline {
             script {
                 sh 'terraform init'
                   sh """
-                            terraform apply --auto-approve -var="instance_ids=[${env.INSTANCE_IDS.tokenize(',').collect { '\"' + it + '\"' }.join(', ')}]"
-                        """
+                    terraform apply --auto-approve -var="instance_ids=${env.INSTANCE_IDS}"
+                """
             }
             }
         }
