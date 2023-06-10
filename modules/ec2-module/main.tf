@@ -91,5 +91,5 @@ resource "aws_instance" "production" {
 
 
 output "instance_ids" {
-  value = aws_instance.production[*].id
+  value = join(",", aws_instance.production[*].id)
 }
