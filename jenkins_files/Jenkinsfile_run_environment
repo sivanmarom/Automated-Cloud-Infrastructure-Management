@@ -91,7 +91,7 @@ pipeline {
                  script {
                 def instanceIds = env.INSTANCE_IDS ?: ""
                 sh "terraform init"
-               sh "terraform apply --auto-approve -var=\"instance_ids=${env.INSTANCE_IDS}\""
+              sh "terraform apply --auto-approve -var=\"instance_ids=${instanceIds}\""
 
             }
                 }
