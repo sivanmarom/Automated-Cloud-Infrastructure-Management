@@ -1,4 +1,4 @@
 variable "bucket_name" {
   type    = string
-  default = "testing-bucket"
+  default = "sivan-bucket"
 }
