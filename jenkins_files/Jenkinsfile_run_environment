@@ -30,8 +30,8 @@ pipeline {
         dir('modules/load-balancer-module') {
             script {
                 unstash 'terraformState'
-                def instanceIdsOutput = sh(script: 'jq -r \'.outputs.instance_ids.value[]\' terraform.tfstate', returnStdout: true).trim()
-                def publicIpsOutput = sh(script: 'jq -r \'.outputs.public_ips.value[]\' terraform.tfstate', returnStdout: true).trim()
+                def instanceIdsOutput = sh(script: 'jq -r \'.outputs.instance_ids.value\' terraform.tfstate', returnStdout: true).trim().split('\n')
+                def publicIpsOutput = sh(script: 'jq -r \'.outputs.public_ips.value\' terraform.tfstate', returnStdout: true).trim().split('\n')
                 echo instanceIdsOutput
                 echo publicIpsOutput
             }
