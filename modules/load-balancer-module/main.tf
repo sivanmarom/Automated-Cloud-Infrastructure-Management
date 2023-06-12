@@ -33,5 +33,6 @@ resource "aws_lb_listener" "listener" {
 resource "aws_lb_target_group_attachment" "attachments" {
   count            = length(var.instances_public_ips)
   target_group_arn = aws_lb_target_group.target_group.arn
-  target_id        = element([for ip in var.instances_public_ips : "${ip}:${var.target_group_port}"], count.index)
+  target_id        = element(var.instances_public_ips, count.index)
+  port             = var.target_group_port
 }
