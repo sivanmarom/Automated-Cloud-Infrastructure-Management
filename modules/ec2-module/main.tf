@@ -57,7 +57,7 @@ resource "aws_instance" "production" {
     type        = "ssh"
     host        = self.public_ip
     user        = "ubuntu"
-    private_key = file("${path.module}/terraform_key.pem")
+    private_key = file("${path.module}/project3.pem")
     timeout     = "10m"
   }
 
