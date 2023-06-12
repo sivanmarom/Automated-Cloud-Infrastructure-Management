@@ -12,7 +12,10 @@ variable "target_group_port" {
   type    = number
   default = 5000
 }
-
+variable "target_type" {
+  type    = string
+  default = "ip"
+}
 variable "target_group_protocol" {
   type    = string
   default = "HTTP"
