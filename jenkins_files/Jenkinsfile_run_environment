@@ -42,7 +42,7 @@ pipeline {
                         
                         sh """
                             terraform init
-                            terraform apply --auto-approve -var='instances_public_ips=${publicIpsAsString.split(',')}'
+                            terraform apply --auto-approve -var='instances_public_ips="${publicIpsAsString.split(',')}"'
                         """
                     }
                 }
