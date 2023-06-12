@@ -16,7 +16,9 @@ pipeline {
         script {
                 sh 'terraform init'
                 sh 'terraform apply --auto-approve'
-                stash name: 'terraformState', includes: 'terraform.tfstate*'
+                def publicIpsOutput = sh(script: 'terraform output -json public_ips | jq -r \'.value\'', returnStdout: true).trim()
+                        echo "publicIpsOutput: ${publicIpsOutput}, Type: ${publicIpsOutput.getClass().getSimpleName()}"
+                        stash name: 'publicIpsOutput', includes: 'publicIpsOutput'
                 }
         }
         }
@@ -28,13 +30,10 @@ stage('create production load-balancer') {
     steps {
         dir('modules/load-balancer-module') {
             script {
-                unstash 'terraformState'
-                def instanceIdsOutput = sh(script: 'jq -r \'.outputs.instance_ids.value\' terraform.tfstate', returnStdout: true).trim()
-                def publicIpsOutput = sh(script: 'jq -r \'.outputs.public_ips.value\' terraform.tfstate', returnStdout: true).trim()
-                echo "instanceIdsOutput: ${instanceIdsOutput}, Type: ${instanceIdsOutput.getClass().getSimpleName()}"
-                echo "publicIpsOutput: ${publicIpsOutput}, Type: ${publicIpsOutput.getClass().getSimpleName()}"
-                sh 'terraform init'
-                sh """terraform apply --auto-approve -var='instances_public_ips=${publicIpsOutput}'"""
+                unstash 'publicIpsOutput'
+                        def publicIps = readFile('publicIpsOutput').trim()
+                        sh 'terraform init'
+                        sh """terraform apply --auto-approve -var='instances_public_ips=${publicIps}'"""
 
             }
         }
