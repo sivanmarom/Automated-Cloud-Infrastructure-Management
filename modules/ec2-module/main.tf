@@ -61,14 +61,6 @@ resource "aws_instance" "production" {
     private_key = file("${path.module}/terraform_key.pem")
     timeout     = "10m"
   }
-
-  user_data = <<-EOT
-    #!/bin/bash
-    sudo apt update -y
-    sudo apt -y install docker.io
-    sudo apt -y install openjdk-8-jre
-    EOT
-
   tags = {
     Name = var.production_instances[count.index]
   }
@@ -78,6 +70,9 @@ resource "aws_instance" "production" {
   }
   provisioner "remote-exec" {
     inline = [
+      "sudo apt update -y",
+      "sudo apt -y install docker.io",
+      "sudo apt -y install openjdk-8-jre",
       "sudo docker pull sivanmarom/test:flask_image-1.5",
       "sudo docker run -it --name flaskApp -p 5000:5000 -d sivanmarom/test:flask_image-1.5"
     ]
