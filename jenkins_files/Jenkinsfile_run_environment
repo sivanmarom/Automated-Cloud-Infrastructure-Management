@@ -13,6 +13,7 @@ pipeline {
                 dir('modules/ec2-module') {
                     script {
                         sh 'terraform init'
+                        sh 'terraform apply --auto-approve'
                         def publicIpsOutput = sh(script: 'terraform output -json public_ips', returnStdout: true).trim()
                         def publicIps = readJSON(text: publicIpsOutput).public_ips.value.join('\n')
                         echo "publicIps: ${publicIps}"
