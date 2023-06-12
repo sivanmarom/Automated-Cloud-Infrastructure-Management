@@ -35,8 +35,8 @@ pipeline {
                         echo "publicIpsOutput: ${publicIpsOutput}, Type: ${publicIpsOutput.getClass().getSimpleName()}"
                         sh 'terraform init'
                         def publicIpsList = publicIpsOutput.split('\n').collect { it.replaceAll('"', '') }
-                  sh """ terraform apply --auto-approve -var="instances_public_ips=${publicIpsList}"
-               """
+                 sh """terraform apply --auto-approve -var='instances_public_ips=${publicIpsList.join(",")}'"""
+
             }
         }
     }
