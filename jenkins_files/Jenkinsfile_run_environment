@@ -17,7 +17,8 @@ pipeline {
                         sh 'terraform init'
                         sh 'terraform apply --auto-approve'
                         // Extract public IPs from terraform.tfstate using jq
-                        sh 'jq -r \'.resources[] | select(.type == "aws_instance" and .name == "production") | .instances[].attributes.\"aws_instance_id\"\' terraform.tfstate > instance_ids.txt'
+                        sh 'jq -r \'.resources[] | select(.type == "aws_instance" and .name == "production") | .instances[].attributes.instance_id\' terraform.tfstate > instance_ids.txt'
+
 
                 
                         // Display extracted public IPs
