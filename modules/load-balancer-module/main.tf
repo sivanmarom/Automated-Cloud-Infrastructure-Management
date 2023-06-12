@@ -18,7 +18,7 @@ resource "aws_lb_target_group" "target_group" {
   vpc_id      = var.vpc_id
 }
 resource "aws_lb_listener" "listener" {
-  load_balancer_arn = aws_lb.load_balancer.arn
+  load_balancer_arn = aws_lb.load_balancer[0].arn
   port              = var.target_group_port
   protocol          = var.target_group_protocol
 
