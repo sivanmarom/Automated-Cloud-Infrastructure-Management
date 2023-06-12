@@ -32,9 +32,9 @@ pipeline {
                 def instanceIdsOutput = sh(script: 'jq -r \'.outputs.instance_ids.value\' terraform.tfstate', returnStdout: true).trim()
                 def publicIpsOutput = sh(script: 'jq -r \'.outputs.public_ips.value\' terraform.tfstate', returnStdout: true).trim()
                 echo "instanceIdsOutput: ${instanceIdsOutput}, Type: ${instanceIdsOutput.getClass().getSimpleName()}"
-                        echo "publicIpsOutput: ${publicIpsOutput}, Type: ${publicIpsOutput.getClass().getSimpleName()}"
-                        sh 'terraform init'
-                 def publicIpsList = publicIpsOutput.split('\n').collect { it.replaceAll('"', '').trim() }.findAll { it }
+                echo "publicIpsOutput: ${publicIpsOutput}, Type: ${publicIpsOutput.getClass().getSimpleName()}"
+                sh 'terraform init'
+                def publicIpsList = publicIpsOutput.split('\n').collect { it.replaceAll('"', '').trim() }.findAll { it != '' }
                 sh """terraform apply --auto-approve -var='instances_public_ips=${publicIpsList.join(",")}'"""
             }
         }
