@@ -34,7 +34,7 @@ stage('create production load-balancer') {
                 echo "instanceIdsOutput: ${instanceIdsOutput}, Type: ${instanceIdsOutput.getClass().getSimpleName()}"
                 echo "publicIpsOutput: ${publicIpsOutput}, Type: ${publicIpsOutput.getClass().getSimpleName()}"
                 sh 'terraform init'
-                sh """terraform apply --auto-approve -var='instances_public_ips=[${publicIpsOutput}]'"""
+                sh """terraform apply --auto-approve -var='instances_public_ips=${publicIpsOutput}'"""
 
             }
         }
