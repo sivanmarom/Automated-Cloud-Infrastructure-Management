@@ -53,14 +53,19 @@ resource "aws_instance" "production" {
   instance_type          = var.instnace_type
   key_name               = "project_3"
   vpc_security_group_ids = [var.security_group]
+  connection {
+    type        = "ssh"
+    host        = self.public_ip
+    user        = "ubuntu"
+    private_key = file("${path.module}/project_3.pem")
+    timeout     = "10m"
+  }
 
   user_data = <<-EOT
     #!/bin/bash
     sudo apt update -y
     sudo apt -y install docker.io
     sudo apt -y install openjdk-8-jre
-    sudo docker pull sivanmarom/test:flask_image-1.5
-    sudo docker run -it --name flaskApp -p 5000:5000 -d --restart=always sivanmarom/test:flask_image-1.5
     EOT
 
   tags = {
@@ -70,7 +75,15 @@ resource "aws_instance" "production" {
   lifecycle {
     create_before_destroy = true
   }
+  provisioner "remote-exec" {
+    inline = [
+      "sudo docker pull sivanmarom/test:flask_image-1.5",
+      "sudo docker run -it --name flaskApp -p 5000:5000 -d sivanmarom/test:flask_image-1.5"
+    ]
+  }
 }
+
+
 
 output "instance_ids" {
   value = aws_instance.production[*].id
