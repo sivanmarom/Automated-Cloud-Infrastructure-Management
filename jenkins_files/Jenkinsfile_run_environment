@@ -17,12 +17,24 @@ pipeline {
         script {
                 sh 'terraform init'
                 sh 'terraform apply --auto-approve'
-                stash name: 'instanceIds', includes: 'terraform.tfstate*'
+                stash name: 'terraformState', includes: 'terraform.tfstate*'
                 }
         }
         }
       }
+    stage('Create Production Load-Balancer') {
+    agent {
+        label 'load_balancer'
     }
+    steps {
+        dir('modules/load-balancer-module') {
+            script {
+                unstash 'terraformState'
+                sh 'jq \'.outputs.instance_ids.value\' terraform.tfstate'
+            }
+        }
+    }
+}
 
         // stage('Create S3 Bucket') {
         //     agent {
@@ -79,20 +91,20 @@ pipeline {
         //         }
         //     }
         // }
-    stage('Create Production Load-Balancer') {
-    agent {
-        label 'load_balancer'
-    }
-    steps {
-        dir('modules/load-balancer-module') {
-            script {
-                unstash 'instanceIds'
-                env.INSTANCE_IDS = sh(script: 'terraform output -raw instance_ids', returnStdout: true).trim()
-                echo "INSTANCE_IDS: ${env.INSTANCE_IDS}"
+        // stage('Create Production Load-Balancer') {
+        // agent {
+        //     label 'load_balancer'
+        // }
+        // steps {
+        //     dir('modules/load-balancer-module') {
+        //         script {
+        //             unstash 'instanceIds'
+        //             env.INSTANCE_IDS = sh(script: 'terraform output -raw instance_ids', returnStdout: true).trim()
+        //             echo "INSTANCE_IDS: ${env.INSTANCE_IDS}"
                
-            }
-        }
-    }
+        //         }
+        //     }
+        // }
 
 
         // stage('Create Production Load-Balancer') {
@@ -109,8 +121,8 @@ pipeline {
         //     }
         //     }
         // }
-        // }
-        }
-  }
+    }
+}
+  
 
 
