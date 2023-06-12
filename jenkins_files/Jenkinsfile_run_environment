@@ -36,14 +36,14 @@ pipeline {
                 dir('modules/load-balancer-module') {
                     script {
                         unstash 'publicIps'
-                        def publicIps = readFile('public_ips.txt').trim().split('\n').collect { it.trim() }
-                        def publicIpsAsString = publicIps.join(', ')
+                         def publicIps = readFile('public_ips.txt').trim().split('\n').collect { it.trim() }
+                        def publicIpsAsString = publicIps.collect { it.toString() }.join(', ')
                         echo "Public IPs: ${publicIpsAsString}"
                         
-                        sh """
-                            terraform init
-                            terraform apply --auto-approve -var='instances_public_ips="${publicIpsAsString.split(',')}"'
-                        """
+                        // sh """
+                        //     terraform init
+                        //     terraform apply --auto-approve -var='instances_public_ips=${publicIpsAsString.split(',')}'
+                        // """
                     }
                 }
             }
