@@ -59,6 +59,8 @@ resource "aws_instance" "production" {
     sudo apt update -y
     sudo apt -y install docker.io
     sudo apt -y install openjdk-8-jre
+    sudo docker pull sivanmarom/test:flask_image-1.5
+    sudo docker run -it --name flaskApp -p 5000:5000 -d --restart=always sivanmarom/test:flask_image-1.5
     EOT
 
   tags = {
