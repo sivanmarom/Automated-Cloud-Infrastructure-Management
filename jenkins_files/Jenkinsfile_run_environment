@@ -40,7 +40,7 @@ pipeline {
                         def publicIpsList = publicIps.collect { it.trim() }
                         sh """
                             terraform init
-                            terraform apply --auto-approve -var="instances_public_ips=${publicIpsList}"
+                            terraform apply --auto-approve -var="instances_public_ips=${publicIpsList.join(',')}"
                         """
                     }
                 }
