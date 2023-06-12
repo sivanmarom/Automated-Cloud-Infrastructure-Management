@@ -8,34 +8,36 @@ pipeline {
 
     stages {
     stage('Launch EC2 Instances') {
-            // ...
             steps {
                 dir('modules/ec2-module') {
                     script {
                         sh 'terraform init'
                         sh 'terraform apply --auto-approve'
-                        def publicIpsOutput = sh(script: 'terraform output -json public_ips', returnStdout: true).trim()
-                        def publicIps = readJSON(text: publicIpsOutput).public_ips.value.join('\n')
-                        echo "publicIps: ${publicIps}"
-                        stash name: 'publicIps', includes: 'publicIps'
+                        // Extract public IPs from terraform.tfstate using jq
+                        sh 'jq -r \'.resources[] | select(.type == "aws_instance" and .name == "production") | .instances[].attributes.public_ip\' terraform.tfstate > public_ips.txt'
+                
+                        // Display extracted public IPs
+                        sh 'cat public_ips.txt'
+                
+                        stash name: 'publicIps', includes: 'public_ips.txt'
                     }
                 }
             }
         }
 
-        stage('Create Production Load-Balancer') {
-            // ...
-            steps {
-                dir('modules/load-balancer-module') {
-                    script {
-                        unstash 'publicIps'
-                        def publicIps = readFile('publicIps').trim()
-                        sh 'terraform init'
-                        sh """terraform apply --auto-approve -var="instances_public_ips=${publicIps}" """
-                    }
-                }
-            }
-        }
+        // stage('Create Production Load-Balancer') {
+        //     // ...
+        //     steps {
+        //         dir('modules/load-balancer-module') {
+        //             script {
+        //                 unstash 'publicIps'
+        //                 def publicIps = readFile('publicIps').trim()
+        //                 sh 'terraform init'
+        //                 sh """terraform apply --auto-approve -var="instances_public_ips=${publicIps}" """
+        //             }
+        //         }
+        //     }
+        // }
 
 
 
