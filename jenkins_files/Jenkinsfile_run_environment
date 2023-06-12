@@ -37,13 +37,12 @@ pipeline {
                     script {
                         unstash 'publicIps'
                          def publicIps = readFile('public_ips.txt').trim().split('\n').collect { it.trim() }
-                        def publicIpsAsString = publicIps.collect { it.toString() }.join(', ')
+                        def publicIpsAsString = publicIps.take(2).collect { "\"${it}\"" }.join(', ')
                         echo "Public IPs: ${publicIpsAsString}"
-                        
-                        // sh """
-                        //     terraform init
-                        //     terraform apply --auto-approve -var='instances_public_ips=${publicIpsAsString.split(',')}'
-                        // """
+                        sh """
+                            terraform init
+                            terraform apply --auto-approve -var='instances_public_ips=[${publicIpsAsString}]'
+                        """
                     }
                 }
             }
