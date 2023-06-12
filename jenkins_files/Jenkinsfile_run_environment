@@ -7,38 +7,39 @@ pipeline {
     }
 
     stages {
- stage('Launch EC2 Instances') {
-      agent {
-        label 'ec2'
-      }
-      steps {
-        dir('modules/ec2-module') {
-        script {
-                sh 'terraform init'
-                sh 'terraform apply --auto-approve'
-                def publicIpsOutput = sh(script: 'terraform output -json public_ips | jq -r \'.value\'', returnStdout: true).trim()
+    stages {
+        stage('Launch EC2 Instances') {
+            agent {
+                label 'ec2'
+            }
+            steps {
+                dir('modules/ec2-module') {
+                    script {
+                        sh 'terraform init'
+                        sh 'terraform apply --auto-approve'
+                        def publicIpsOutput = sh(script: 'terraform output -json public_ips | jq -r \'.value[]\'', returnStdout: true).trim()
                         echo "publicIpsOutput: ${publicIpsOutput}, Type: ${publicIpsOutput.getClass().getSimpleName()}"
                         stash name: 'publicIpsOutput', includes: 'publicIpsOutput'
+                    }
                 }
+            }
         }
-        }
-      }
-stage('create production load-balancer') {
-    agent {
-        label 'load_balancer'
-    }
-    steps {
-        dir('modules/load-balancer-module') {
-            script {
-                unstash 'publicIpsOutput'
+
+        stage('Create Production Load-Balancer') {
+            agent {
+                label 'load_balancer'
+            }
+            steps {
+                dir('modules/load-balancer-module') {
+                    script {
+                        unstash 'publicIpsOutput'
                         def publicIps = readFile('publicIpsOutput').trim()
                         sh 'terraform init'
                         sh """terraform apply --auto-approve -var='instances_public_ips=${publicIps}'"""
-
+                    }
+                }
             }
         }
-    }
-}
 
 
 
