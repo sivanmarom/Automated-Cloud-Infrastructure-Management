@@ -51,13 +51,14 @@ resource "aws_instance" "production" {
   count                  = length(var.production_instances)
   ami                    = var.instance_ami
   instance_type          = var.instnace_type
-  key_name               = "project3"
   vpc_security_group_ids = [var.security_group]
+  key_name               = "terraform_key"
+
   connection {
     type        = "ssh"
     host        = self.public_ip
     user        = "ubuntu"
-    private_key = file("${path.module}/project3.pem")
+    private_key = file("${path.module}/terraform_key.pem")
     timeout     = "10m"
   }
 
