@@ -28,25 +28,25 @@ pipeline {
             }
         }
 
-        stage('Create Production Load-Balancer') {
-            agent {
-                label 'load_balancer'
-            }
-            steps {
-                dir('modules/load-balancer-module') {
-                    script {
-                        unstash 'publicIps'
-                         def publicIps = readFile('public_ips.txt').trim().split('\n').collect { it.trim() }
-                        def publicIpsAsString = publicIps.take(2).collect { "\"${it}\"" }.join(', ')
-                        echo "Public IPs: ${publicIpsAsString}"
-                        sh """
-                            terraform init
-                            terraform apply --auto-approve -var='instances_public_ips=[${publicIpsAsString}]'
-                        """
-                    }
-                }
-            }
-        }
+        // stage('Create Production Load-Balancer') {
+        //     agent {
+        //         label 'load_balancer'
+        //     }
+        //     steps {
+        //         dir('modules/load-balancer-module') {
+        //             script {
+        //                 unstash 'publicIps'
+        //                  def publicIps = readFile('public_ips.txt').trim().split('\n').collect { it.trim() }
+        //                 def publicIpsAsString = publicIps.take(2).collect { "\"${it}\"" }.join(', ')
+        //                 echo "Public IPs: ${publicIpsAsString}"
+        //                 sh """
+        //                     terraform init
+        //                     terraform apply --auto-approve -var='instances_public_ips=[${publicIpsAsString}]'
+        //                 """
+        //             }
+        //         }
+        //     }
+        // }
 
 
 
