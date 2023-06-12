@@ -36,7 +36,8 @@ stage('create production load-balancer') {
                 sh 'terraform init'
                 def publicIpsList = publicIpsOutput.split(',').collect { it.replaceAll('"', '').trim() }.findAll { it != '' }
                 def instancesPublicIps = publicIpsList.collect { "'${it}'" }.join(',')
-                sh """terraform apply --auto-approve -var='instances_public_ips=${instancesPublicIps}'"""
+                sh """terraform apply --auto-approve -var='instances_public_ips=[${instancesPublicIps}]'"""
+
             }
         }
     }
