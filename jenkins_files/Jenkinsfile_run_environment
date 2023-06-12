@@ -4,7 +4,6 @@ pipeline {
     }
      environment {
         GITHUB_TOKEN = credentials('github_token')
-        INSTANCE_IDS =""
     }
 
     stages {
@@ -22,7 +21,7 @@ pipeline {
         }
         }
       }
-    stage('getting ids and public ips') {
+    stage('create production load-balancer') {
     agent {
         label 'load_balancer'
     }
@@ -34,6 +33,9 @@ pipeline {
                 def publicIpsOutput = sh(script: 'jq -r \'.outputs.public_ips.value\' terraform.tfstate', returnStdout: true).trim()
                 echo "instanceIdsOutput: ${instanceIdsOutput}, Type: ${instanceIdsOutput.getClass().getSimpleName()}"
                         echo "publicIpsOutput: ${publicIpsOutput}, Type: ${publicIpsOutput.getClass().getSimpleName()}"
+                        sh 'terraform init'
+                  sh """ terraform apply --auto-approve -var="instances_public_ips=${publicIpsOutput}"
+               """
             }
         }
     }

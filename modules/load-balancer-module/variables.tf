@@ -10,7 +10,7 @@ variable "target_group_name" {
 
 variable "target_group_port" {
   type    = number
-  default = 80
+  default = 5000
 }
 
 variable "target_group_protocol" {
@@ -33,7 +33,7 @@ variable "subnets" {
   default = ["subnet-0950fcd396ff7984e", "subnet-0816347f6f77da266", "subnet-0c04c4c76e62a996e", "subnet-0284211308afcc97d", "subnet-0e287e27d1d7ca185", "subnet-0a8f7034ba7a7730c"]
 }
 
-variable "instance_ids" {
+variable "instances_public_ips" {
   type    = list(string)
   default = []
 }
