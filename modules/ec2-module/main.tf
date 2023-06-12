@@ -71,7 +71,7 @@ resource "aws_instance" "production" {
 }
 
 output "instance_ids" {
-  value = join(",", aws_instance.production[*].id)
+  value = aws_instance.production[*].id
 }
 output "public_ips" {
   value = aws_instance.production[*].public_ip
