@@ -51,7 +51,7 @@ resource "aws_instance" "production" {
   count                  = length(var.production_instances)
   ami                    = var.instance_ami
   instance_type          = var.instnace_type
-  key_name               = "project_3"
+  key_name               = "project3"
   vpc_security_group_ids = [var.security_group]
   connection {
     type        = "ssh"
