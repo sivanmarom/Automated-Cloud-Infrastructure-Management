@@ -22,7 +22,7 @@ pipeline {
         }
         }
       }
-    stage('Create Production Load-Balancer') {
+    stage('getting ids and public ips') {
     agent {
         label 'load_balancer'
     }
@@ -30,7 +30,10 @@ pipeline {
         dir('modules/load-balancer-module') {
             script {
                 unstash 'terraformState'
-                sh 'jq \'.outputs.instance_ids.value\' terraform.tfstate'
+                def instanceIdsOutput = sh(script: 'jq -r \'.outputs.instance_ids.value[]\' terraform.tfstate', returnStdout: true).trim()
+                def publicIpsOutput = sh(script: 'jq -r \'.outputs.public_ips.value[]\' terraform.tfstate', returnStdout: true).trim()
+                echo instanceIdsOutput
+                echo publicIpsOutput
             }
         }
     }
