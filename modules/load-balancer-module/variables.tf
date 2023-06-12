@@ -36,7 +36,7 @@ variable "subnets" {
   default = ["subnet-0950fcd396ff7984e", "subnet-0816347f6f77da266", "subnet-0c04c4c76e62a996e", "subnet-0284211308afcc97d", "subnet-0e287e27d1d7ca185", "subnet-0a8f7034ba7a7730c"]
 }
 
-variable "instances_public_ips" {
+variable "instances_ids" {
   type    = list(string)
   default = []
 }

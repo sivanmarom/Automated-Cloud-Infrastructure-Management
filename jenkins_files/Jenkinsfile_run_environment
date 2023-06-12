@@ -17,12 +17,12 @@ pipeline {
                         sh 'terraform init'
                         sh 'terraform apply --auto-approve'
                         // Extract public IPs from terraform.tfstate using jq
-                        sh 'jq -r \'.resources[] | select(.type == "aws_instance" and .name == "production") | .instances[].attributes.public_ip\' terraform.tfstate > public_ips.txt'
+                        sh 'jq -r \'.resources[] | select(.type == "aws_instance" and .name == "production") | .instances[].attributes.instance_id\' terraform.tfstate > instance_ids.txt'
                 
                         // Display extracted public IPs
-                        sh 'cat public_ips.txt'
+                        sh 'cat instance_ids.txt'
                 
-                        stash name: 'publicIps', includes: 'public_ips.txt'
+                        stash name: 'instanceIds', includes: 'instance_ids.txt'
                     }
                 }
             }
@@ -35,13 +35,13 @@ pipeline {
             steps {
                 dir('modules/load-balancer-module') {
                     script {
-                        unstash 'publicIps'
-                         def publicIps = readFile('public_ips.txt').trim().split('\n').collect { it.trim() }
-                        def publicIpsAsString = publicIps.take(2).collect { "\"${it}\"" }.join(', ')
-                        echo "Public IPs: ${publicIpsAsString}"
+                        unstash 'instanceIds'
+                         def instance_ids = readFile('instance_ids.txt').trim().split('\n').collect { it.trim() }
+                        def instanceIdsAsString = instance_ids.take(2).collect { "\"${it}\"" }.join(', ')
+                        echo "instances ids: ${instanceIdsAsString}"
                         sh """
                             terraform init
-                            terraform apply --auto-approve -var='instances_public_ips=[${publicIpsAsString}]'
+                            terraform apply --auto-approve -var='instances_ids=[${instanceIdsAsString}]'
                         """
                     }
                 }
