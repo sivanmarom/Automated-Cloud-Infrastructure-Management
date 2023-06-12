@@ -35,11 +35,13 @@ stage('create production load-balancer') {
                 echo "publicIpsOutput: ${publicIpsOutput}, Type: ${publicIpsOutput.getClass().getSimpleName()}"
                 sh 'terraform init'
                 def publicIpsList = publicIpsOutput.split(',').collect { it.replaceAll('"', '').trim() }.findAll { it != '' }
-                sh """terraform apply --auto-approve -var='instances_public_ips=${publicIpsList.join(",")}'"""
+                def instancesPublicIps = publicIpsList.collect { "\"${it}\"" }.join(',')
+                sh """terraform apply --auto-approve -var="instances_public_ips=[${instancesPublicIps}]\""""
             }
         }
     }
 }
+
 
         // stage('Create S3 Bucket') {
         //     agent {
