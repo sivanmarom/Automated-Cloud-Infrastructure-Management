@@ -7,34 +7,30 @@ pipeline {
     }
 
     stages {
-        stage('Launch EC2 Instances') {
-            agent {
-                label 'ec2'
-            }
+    stage('Launch EC2 Instances') {
+            // ...
             steps {
                 dir('modules/ec2-module') {
                     script {
-                        sh 'terraform init'
-                        sh 'terraform apply --auto-approve'
-                        def publicIpsOutput = sh(script: 'terraform output -json public_ips | jq -r \'.value[]\'', returnStdout: true).trim()
-                        echo "publicIpsOutput: ${publicIpsOutput}, Type: ${publicIpsOutput.getClass().getSimpleName()}"
-                        stash name: 'publicIpsOutput', includes: 'publicIpsOutput'
+                        // ...
+                        def publicIpsOutput = sh(script: 'terraform output -json public_ips', returnStdout: true).trim()
+                        def publicIps = readJSON(text: publicIpsOutput).public_ips.value.join('\n')
+                        echo "publicIps: ${publicIps}"
+                        stash name: 'publicIps', includes: 'publicIps'
                     }
                 }
             }
         }
 
         stage('Create Production Load-Balancer') {
-            agent {
-                label 'load_balancer'
-            }
+            // ...
             steps {
                 dir('modules/load-balancer-module') {
                     script {
-                        unstash 'publicIpsOutput'
-                        def publicIps = readFile('publicIpsOutput').trim()
+                        unstash 'publicIps'
+                        def publicIps = readFile('publicIps').trim()
                         sh 'terraform init'
-                        sh """terraform apply --auto-approve -var='instances_public_ips=${publicIps}'"""
+                        sh """terraform apply --auto-approve -var="instances_public_ips=${publicIps}" """
                     }
                 }
             }
