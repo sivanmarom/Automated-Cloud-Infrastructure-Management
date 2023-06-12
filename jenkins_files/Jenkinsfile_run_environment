@@ -40,10 +40,10 @@ pipeline {
                         def publicIpsAsString = publicIps.join(', ')
                         echo "Public IPs: ${publicIpsAsString}"
                         
-                        // sh """
-                        //     terraform init
-                        //     terraform apply --auto-approve -var='instances_public_ips=["${publicIpsAsString}"]'
-                        // """
+                        sh """
+                            terraform init
+                            terraform apply --auto-approve -var='instances_public_ips=["${publicIpsAsString}"]'
+                        """
                     }
                 }
             }
