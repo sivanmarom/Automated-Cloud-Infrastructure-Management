@@ -9,7 +9,7 @@ terraform {
     }
   }
 }
-#need to replace token and check for secure way to save
+
 provider "github" {
   token = var.github_token
 }
@@ -21,7 +21,7 @@ resource "github_repository" "terraform_project" {
 }
 
 resource "github_branch_default" "default_main" {
-  repository = github_repository.terraform_project.name
+  repository = "Terraform-project"
   branch     = var.github_main_branch
 }
 
