@@ -47,7 +47,7 @@ pipeline {
         //             sh 'terraform destroy --auto-approve'
         //         }
         //     }
-        }
+        // }
         stage('Destroy Github resource') {
             agent {
                 label 'github'
