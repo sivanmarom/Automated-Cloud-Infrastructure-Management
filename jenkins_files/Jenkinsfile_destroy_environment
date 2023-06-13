@@ -47,17 +47,17 @@ pipeline {
                 }
             }
         }
-        stage('Destroy Github resource') {
-            agent {
-                label 'github'
-            }
-            steps {
-                dir('/home/ubuntu/workspace/Run-terraform-environment/modules/github-module') {
-                    sh 'terraform init'
-                    sh 'terraform destroy --auto-approve'
-                }
-            }
-        }
+        // stage('Destroy Github resource') {
+        //     agent {
+        //         label 'github'
+        //     }
+        //     steps {
+        //         dir('/home/ubuntu/workspace/Run-terraform-environment/modules/github-module') {
+        //             sh 'terraform init'
+        //             sh 'terraform destroy --auto-approve'
+        //         }
+        //     }
+        // }
         stage('Destroy Cloud-Watch Alarm') {
             agent {
                 label 'cloud-watch'
