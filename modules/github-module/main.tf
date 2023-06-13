@@ -20,8 +20,8 @@ resource "github_repository" "terraform_project" {
   auto_init   = true
 }
 
-# resource "github_branch_default" "default_main" {
-#   repository = "Terraform-project"
-#   branch     = var.github_main_branch
-# }
+resource "github_branch_default" "default_main" {
+  repository = "Terraform-project"
+  branch     = var.github_main_branch
+}
 
