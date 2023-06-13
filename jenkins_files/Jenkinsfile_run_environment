@@ -92,13 +92,15 @@ pipeline {
             }
             steps {
                 dir('modules/cloud-watch-module'){
-               unstash 'instanceIds'
+                    script {
+                    unstash 'instanceIds'
                     def instance_ids = readFile('instance_ids.txt').trim().split('\n').collect { it.trim() }
                     def instanceIdsAsString = instance_ids.take(2).collect { "\"${it}\"" }.join(', ')
                     sh """
                             terraform init
                             terraform apply --auto-approve -var='instances_ids=[${instanceIdsAsString}]'
                     """    
+                }
                 }
             }
         }
