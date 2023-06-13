@@ -30,25 +30,25 @@ pipeline {
             }
         }
 
-        stage('Create Production Load-Balancer') {
-            agent {
-                label 'load_balancer'
-            }
-            steps {
-                dir('modules/load-balancer-module') {
-                    script {
-                        unstash 'instanceIds'
-                         def instance_ids = readFile('instance_ids.txt').trim().split('\n').collect { it.trim() }
-                        def instanceIdsAsString = instance_ids.take(2).collect { "\"${it}\"" }.join(', ')
-                        echo "instances ids: ${instanceIdsAsString}"
-                        sh """
-                            terraform init
-                            terraform apply --auto-approve -var='instances_ids=[${instanceIdsAsString}]'
-                        """
-                    }
-                }
-            }
-        }
+        // stage('Create Production Load-Balancer') {
+        //     agent {
+        //         label 'load_balancer'
+        //     }
+        //     steps {
+        //         dir('modules/load-balancer-module') {
+        //             script {
+        //                 unstash 'instanceIds'
+        //                  def instance_ids = readFile('instance_ids.txt').trim().split('\n').collect { it.trim() }
+        //                 def instanceIdsAsString = instance_ids.take(2).collect { "\"${it}\"" }.join(', ')
+        //                 echo "instances ids: ${instanceIdsAsString}"
+        //                 sh """
+        //                     terraform init
+        //                     terraform apply --auto-approve -var='instances_ids=[${instanceIdsAsString}]'
+        //                 """
+        //             }
+        //         }
+        //     }
+        // }
 
 
 

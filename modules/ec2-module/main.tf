@@ -54,13 +54,13 @@ resource "aws_instance" "production" {
   vpc_security_group_ids = [var.security_group]
   key_name               = "terraform_key"
 
-  connection {
-    type        = "ssh"
-    host        = self.public_ip
-    user        = "ubuntu"
-    private_key = file("${path.module}/terraform_key.pem")
-    timeout     = "10m"
-  }
+  # connection {
+  #   type        = "ssh"
+  #   host        = self.public_ip
+  #   user        = "ubuntu"
+  #   private_key = file("${path.module}/terraform_key.pem")
+  #   timeout     = "10m"
+  # }
   tags = {
     Name = var.production_instances[count.index]
   }
@@ -68,15 +68,15 @@ resource "aws_instance" "production" {
   lifecycle {
     create_before_destroy = true
   }
-  provisioner "remote-exec" {
-    inline = [
-      "sudo apt update -y",
-      "sudo apt -y install docker.io",
-      "sudo apt -y install openjdk-8-jre",
-      "sudo docker pull sivanmarom/test:flask_image-1.5",
-      "sudo docker run -it --name flaskApp -p 5000:5000 -d sivanmarom/test:flask_image-1.5"
-    ]
-  }
+  # provisioner "remote-exec" {
+  #   inline = [
+  #     "sudo apt update -y",
+  #     "sudo apt -y install docker.io",
+  #     "sudo apt -y install openjdk-8-jre",
+  #     "sudo docker pull sivanmarom/test:flask_image-1.5",
+  #     "sudo docker run -it --name flaskApp -p 5000:5000 -d sivanmarom/test:flask_image-1.5"
+  #   ]
+  # }
 }
 
 
