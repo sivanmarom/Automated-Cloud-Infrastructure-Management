@@ -2,6 +2,10 @@ pipeline {
     agent {
         label 'main_agent'
     }
+     environment {
+        GITHUB_TOKEN = credentials('github_token')
+    }
+
     stages {
         stage('Destroy EC2 Instances') {
             agent {
@@ -47,17 +51,17 @@ pipeline {
                 }
             }
         }
-        // stage('Destroy Github resource') {
-        //     agent {
-        //         label 'github'
-        //     }
-        //     steps {
-        //         dir('/home/ubuntu/workspace/Run-terraform-environment/modules/github-module') {
-        //             sh 'terraform init'
-        //             sh 'terraform destroy --auto-approve'
-        //         }
-        //     }
-        // }
+        stage('Destroy Github resource') {
+            agent {
+                label 'github'
+            }
+            steps {
+                dir('/home/ubuntu/workspace/Run-terraform-environment/modules/github-module') {
+                    sh 'terraform init'
+                     sh "terraform apply --auto-approve -var=\"github_token=${env.GITHUB_TOKEN}\""
+                }
+            }
+        }
         stage('Destroy Cloud-Watch Alarm') {
             agent {
                 label 'cloud-watch'
