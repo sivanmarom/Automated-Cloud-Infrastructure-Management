@@ -16,15 +16,7 @@ pipeline {
                     script {
                         sh 'terraform init'
                         sh 'terraform apply --auto-approve'
-                        // Extract public IPs from terraform.tfstate using jq
                         sh 'jq -r ".resources[] | select(.type == \\"aws_instance\\" and .name == \\"production\\") | .instances[].attributes.id" terraform.tfstate > instance_ids.txt'
-
-
-
-                
-                        // Display extracted public IPs
-                        sh 'cat instance_ids.txt'
-                
                         stash name: 'instanceIds', includes: 'instance_ids.txt'
                     }
                 }
@@ -39,9 +31,8 @@ pipeline {
                 dir('modules/load-balancer-module') {
                     script {
                         unstash 'instanceIds'
-                         def instance_ids = readFile('instance_ids.txt').trim().split('\n').collect { it.trim() }
+                        def instance_ids = readFile('instance_ids.txt').trim().split('\n').collect { it.trim() }
                         def instanceIdsAsString = instance_ids.take(2).collect { "\"${it}\"" }.join(', ')
-                        echo "instances ids: ${instanceIdsAsString}"
                         sh """
                             terraform init
                             terraform apply --auto-approve -var='instances_ids=[${instanceIdsAsString}]'
@@ -51,94 +42,67 @@ pipeline {
             }
         }
 
-
-
-
-        // stage('Create S3 Bucket') {
-        //     agent {
-        //         label 's3'
-        //     }
-        //     steps {
-        //         dir('modules/s3-module'){
-        //         sh 'terraform init'
-        //         sh 'terraform apply --auto-approve'
-        //         }
-        //     }
-        // }
-        // stage('Create IAM User') {
-        //     agent {
-        //         label 'iam'
-        //     }
-        //     steps {
-        //         dir('modules/iam-module'){
-        //         sh 'terraform init'
-        //         sh 'terraform apply --auto-approve'
-        //         }
-        //     }
-        // }
-        // stage('Create DynamoDB Table') {
-        //     agent {
-        //         label 'dynamodb'
-        //     }
-        //     steps {
-        //         dir('modules/dynamodb-module'){
-        //         sh 'terraform init'
-        //         sh 'terraform apply --auto-approve'
-        //         }
-        //     }
-        // }
-        // stage('Handling Github') {
-        //     agent {
-        //         label 'github'
-        //     }
-        //     steps {
-        //         dir('modules/github-module'){
-        //         sh 'terraform init'
-        //         sh "terraform apply --auto-approve -var=\"github_token=${env.GITHUB_TOKEN}\""
-        //         }
-        //     }
-        // }
-        // stage('Create Cloud-Watch Alarm') {
-        //     agent {
-        //         label 'cloud-watch'
-        //     }
-        //     steps {
-        //         dir('modules/cloud-watch-module'){
-        //         sh 'terraform init'
-        //         sh 'terraform apply --auto-approve'
-        //         }
-        //     }
-        // }
-        // stage('Create Production Load-Balancer') {
-        // agent {
-        //     label 'load_balancer'
-        // }
-        // steps {
-        //     dir('modules/load-balancer-module') {
-        //         script {
-        //             unstash 'instanceIds'
-        //             env.INSTANCE_IDS = sh(script: 'terraform output -raw instance_ids', returnStdout: true).trim()
-        //             echo "INSTANCE_IDS: ${env.INSTANCE_IDS}"
-               
-        //         }
-        //     }
-        // }
-
-
-        // stage('Create Production Load-Balancer') {
-        // agent {
-        //     label 'load_balancer'
-        // }
-        // steps {
-        //     dir('modules/load-balancer-module') {
-        //     script {
-        //         sh 'terraform init'
-        //           sh """
-        //             terraform apply --auto-approve -var="instance_ids=${env.INSTANCE_IDS}"
-        //         """
-        //     }
-        //     }
-        // }
+        stage('Create S3 Bucket') {
+            agent {
+                label 's3'
+            }
+            steps {
+                dir('modules/s3-module'){
+                sh 'terraform init'
+                sh 'terraform apply --auto-approve'
+                }
+            }
+        }
+        stage('Create IAM User') {
+            agent {
+                label 'iam'
+            }
+            steps {
+                dir('modules/iam-module'){
+                sh 'terraform init'
+                sh 'terraform apply --auto-approve'
+                }
+            }
+        }
+        stage('Create DynamoDB Table') {
+            agent {
+                label 'dynamodb'
+            }
+            steps {
+                dir('modules/dynamodb-module'){
+                sh 'terraform init'
+                sh 'terraform apply --auto-approve'
+                }
+            }
+        }
+        stage('Handling Github') {
+            agent {
+                label 'github'
+            }
+            steps {
+                dir('modules/github-module'){
+                sh 'terraform init'
+                sh "terraform apply --auto-approve -var=\"github_token=${env.GITHUB_TOKEN}\""
+                }
+            }
+        }
+        stage('Create Cloud-Watch Alarm') {
+            agent {
+                label 'cloud-watch'
+            }
+            steps {
+                dir('modules/cloud-watch-module'){
+               unstash 'instanceIds'
+                    def instance_ids = readFile('instance_ids.txt').trim().split('\n').collect { it.trim() }
+                    def instanceIdsAsString = instance_ids.take(2).collect { "\"${it}\"" }.join(', ')
+                    sh """
+                            terraform init
+                            terraform apply --auto-approve -var='instances_ids=[${instanceIdsAsString}]'
+                    """    
+                }
+            }
+        }
+        
     }
 }
   
