@@ -98,7 +98,7 @@ pipeline {
                     def instanceIdsAsString = instance_ids.take(2).collect { "\"${it}\"" }.join(', ')
                     sh """
                             terraform init
-                            terraform apply --auto-approve -var='instances_ids=[${instanceIdsAsString}]'
+                            terraform apply --auto-approve -var='instances-ids=[${instanceIdsAsString}]'
                     """    
                 }
                 }
