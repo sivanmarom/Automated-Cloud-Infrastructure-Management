@@ -14,7 +14,7 @@ variable "target_group_port" {
 }
 variable "target_type" {
   type    = string
-  default = "ip"
+  default = "instance"
 }
 variable "target_group_protocol" {
   type    = string
