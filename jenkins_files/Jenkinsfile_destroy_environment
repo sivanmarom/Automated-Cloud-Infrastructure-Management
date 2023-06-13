@@ -71,7 +71,7 @@ pipeline {
         }
         stage('Destroy Load-Balancer') {
             agent {
-                label 'load-balancer'
+                label 'load_balancer'
             }
             steps {
                 dir('/home/ubuntu/workspace/Run-terraform-environment/modules/load-balancer-module') {
