@@ -58,7 +58,7 @@ pipeline {
             steps {
                 dir('/home/ubuntu/workspace/Run-terraform-environment/modules/github-module') {
                     sh 'terraform init'
-                    sh 'terraform apply --auto-approve -var="github_token=${env.GITHUB_TOKEN}" -target=module.github'
+                     sh "terraform apply --auto-approve -var=\"github_token=${env.GITHUB_TOKEN}\""
                 }
             }
         }
