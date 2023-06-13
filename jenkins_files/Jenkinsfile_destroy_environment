@@ -2,54 +2,51 @@ pipeline {
     agent {
         label 'main_agent'
     }
-     environment {
-        GITHUB_TOKEN = credentials('github_token')
-    }
 
     stages {
-        stage('Destroy EC2 Instances') {
-            agent {
-                label 'ec2'
-            }
-            steps {
-                dir('/home/ubuntu/workspace/Run-terraform-environment/modules/ec2-module') {
-                    sh 'terraform init'
-                    sh 'terraform destroy --auto-approve'
-                }
-            }
-        }
-        stage('Destroy S3 Bucket') {
-            agent {
-                label 's3'
-            }
-            steps {   
-                dir('/home/ubuntu/workspace/Run-terraform-environment/modules/s3-module') {
-                    sh 'terraform init'
-                    sh 'terraform destroy --auto-approve'
-                }
-            }
-        }
-        stage('Destroy IAM User') {
-            agent {
-                label 'iam'
-            }
-            steps {
-                dir('/home/ubuntu/workspace/Run-terraform-environment/modules/iam-module') {
-                    sh 'terraform init'
-                    sh 'terraform destroy --auto-approve'
-                }
-            }
-        }
-        stage('Destroy DynamoDB Table') {
-            agent {
-                label 'dynamodb'
-            }
-            steps {      
-                dir('/home/ubuntu/workspace/Run-terraform-environment/modules/dynamodb-module') {
-                    sh 'terraform init'         
-                    sh 'terraform destroy --auto-approve'
-                }
-            }
+        // stage('Destroy EC2 Instances') {
+        //     agent {
+        //         label 'ec2'
+        //     }
+        //     steps {
+        //         dir('/home/ubuntu/workspace/Run-terraform-environment/modules/ec2-module') {
+        //             sh 'terraform init'
+        //             sh 'terraform destroy --auto-approve'
+        //         }
+        //     }
+        // }
+        // stage('Destroy S3 Bucket') {
+        //     agent {
+        //         label 's3'
+        //     }
+        //     steps {   
+        //         dir('/home/ubuntu/workspace/Run-terraform-environment/modules/s3-module') {
+        //             sh 'terraform init'
+        //             sh 'terraform destroy --auto-approve'
+        //         }
+        //     }
+        // }
+        // stage('Destroy IAM User') {
+        //     agent {
+        //         label 'iam'
+        //     }
+        //     steps {
+        //         dir('/home/ubuntu/workspace/Run-terraform-environment/modules/iam-module') {
+        //             sh 'terraform init'
+        //             sh 'terraform destroy --auto-approve'
+        //         }
+        //     }
+        // }
+        // stage('Destroy DynamoDB Table') {
+        //     agent {
+        //         label 'dynamodb'
+        //     }
+        //     steps {      
+        //         dir('/home/ubuntu/workspace/Run-terraform-environment/modules/dynamodb-module') {
+        //             sh 'terraform init'         
+        //             sh 'terraform destroy --auto-approve'
+        //         }
+        //     }
         }
         stage('Destroy Github resource') {
             agent {
@@ -58,31 +55,31 @@ pipeline {
             steps {
                 dir('/home/ubuntu/workspace/Run-terraform-environment/modules/github-module') {
                     sh 'terraform init'
-                     sh "terraform destroy --auto-approve -var=\"github_token=${env.GITHUB_TOKEN}\""
+                     sh "terraform destroy --auto-approve "
                 }
             }
         }
-        stage('Destroy Cloud-Watch Alarm') {
-            agent {
-                label 'cloud-watch'
-            }
-            steps {
-                dir('/home/ubuntu/workspace/Run-terraform-environment/modules/cloud-watch-module') {
-                    sh 'terraform init'
-                    sh 'terraform destroy --auto-approve'
-                }
-            }
-        }
-        stage('Destroy Load-Balancer') {
-            agent {
-                label 'load_balancer'
-            }
-            steps {
-                dir('/home/ubuntu/workspace/Run-terraform-environment/modules/load-balancer-module') {
-                    sh 'terraform init'
-                    sh 'terraform destroy --auto-approve'
-                }
-            }
-        }
+        // stage('Destroy Cloud-Watch Alarm') {
+        //     agent {
+        //         label 'cloud-watch'
+        //     }
+        //     steps {
+        //         dir('/home/ubuntu/workspace/Run-terraform-environment/modules/cloud-watch-module') {
+        //             sh 'terraform init'
+        //             sh 'terraform destroy --auto-approve'
+        //         }
+        //     }
+        // }
+        // stage('Destroy Load-Balancer') {
+        //     agent {
+        //         label 'load_balancer'
+        //     }
+        //     steps {
+        //         dir('/home/ubuntu/workspace/Run-terraform-environment/modules/load-balancer-module') {
+        //             sh 'terraform init'
+        //             sh 'terraform destroy --auto-approve'
+        //         }
+        //     }
+        // }
     }
 }
