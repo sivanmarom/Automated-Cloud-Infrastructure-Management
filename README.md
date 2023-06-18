@@ -5,13 +5,21 @@ This project focuses on automating the deployment and management of a scalable i
 The project is organized into several Terraform modules, each responsible for provisioning and configuring a specific set of resources. The modules include:
 
 &#8226; EC2 Instance with Jenkins Server: Provisions an EC2 instance with Jenkins server installed, acting as the central hub for managing the deployment pipeline.
+
 &#8226; Creation of EC2 Instances: Creates additional EC2 instances to support various components within the infrastructure.
+
 &#8226; Load Balancer: Sets up an Application Load Balancer to distribute incoming traffic across the EC2 instances, enhancing scalability and availability.
+
 &#8226; CloudWatch Alarms: Configures CloudWatch alarms to monitor metrics and trigger notifications or actions based on predefined thresholds.
+
 &#8226; GitHub Repository: Creates a GitHub repository to store and manage the project's source code, facilitating version control and collaboration.
+
 &#8226; DynamoDB Table: Provisions a DynamoDB table, offering a highly scalable NoSQL database for structured data storage and retrieval.
+
 &#8226; S3 Bucket: Sets up an S3 bucket, a scalable object storage service for managing data, artifacts, and backups.
+
 &#8226; IAM User: Creates an IAM user with appropriate access and permissions for managing the infrastructure resources.
+
 Additionally, there is a separate monitoring module that deploys a local Prometheus and Grafana environment using Docker Compose. This module enables monitoring and visualization of CPU usage across the agent instances.
 
 ## Deployment and Lifecycle
@@ -32,9 +40,13 @@ Before deploying the infrastructure, make sure you have set up the following:
 The project repository is structured as follows:
 
 &#8226; modules/: Contains Terraform modules for each resource.
+
 &#8226; monitoring/: Includes YAML files for setting up Prometheus and Grafana monitoring.
+
 &#8226; Jenkinsfile: Defines the Jenkins pipeline, specifying the deployment and destruction stages.
+
 &#8226; README.md: Project documentation providing an overview, instructions, and guidelines.
+
 &#8226; Additional project-specific files and directories as required.
 
 ## Instructions
