@@ -1,8 +1,8 @@
 # DevOps Infrastructure Deployment Project
 This project focuses on automating the deployment and management of a scalable infrastructure environment using Terraform and Jenkins on AWS. The infrastructure consists of various AWS resources and services, including EC2 instances, Jenkins server, load balancer, CloudWatch alarms, GitHub repository, DynamoDB table, S3 bucket, and IAM user.
 
-## Project Structure
-The project is organized into several Terraform modules, each responsible for provisioning and configuring a specific set of resources. The modules include:
+## Project Overview
+The DevOps Infrastructure Deployment Project aims to automate the provisioning and management of the infrastructure through the following Terraform modules:
 
 &#8226; EC2 Instance with Jenkins Server: Provisions an EC2 instance with Jenkins server installed, acting as the central hub for managing the deployment pipeline.
 
@@ -20,9 +20,9 @@ The project is organized into several Terraform modules, each responsible for pr
 
 &#8226; IAM User: Creates an IAM user with appropriate access and permissions for managing the infrastructure resources.
 
-Additionally, there is a separate monitoring module that deploys a local Prometheus and Grafana environment using Docker Compose. This module enables monitoring and visualization of CPU usage across the agent instances.
+In addition, a separate monitoring module is included, deploying a local Prometheus and Grafana environment using Docker Compose. This module enables CPU usage monitoring across the agent instances.
 
-## Deployment and Lifecycle
+## Deployment and Lifecycle Management
 The infrastructure deployment and lifecycle management are orchestrated using Jenkins pipeline jobs. The Jenkins pipeline includes the following stages:
 
 1. Deployment: Triggers the Terraform scripts for each module, ensuring consistent and automated infrastructure provisioning.
@@ -30,7 +30,7 @@ The infrastructure deployment and lifecycle management are orchestrated using Je
 3. Destruction: Executes a separate pipeline job to tear down the infrastructure by running the Terraform destroy command for each module.
 
 ## AWS Setup
-Before deploying the infrastructure, make sure you have set up the following:
+To deploy the infrastructure successfully, follow these preliminary steps:
 
 1. Create an AWS account and generate access credentials with appropriate permissions.
 2. Install and configure the AWS CLI on your local machine.
